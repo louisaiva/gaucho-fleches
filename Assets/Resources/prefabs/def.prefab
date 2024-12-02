@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6269447765996588489}
   - component: {fileID: 2717490517094309811}
   - component: {fileID: 7840988452993710242}
+  - component: {fileID: 1989280331418669102}
   m_Layer: 5
   m_Name: text_bas
   m_TagString: Untagged
@@ -66,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: pain
+  m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -109,7 +110,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -137,6 +138,23 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1989280331418669102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613446326964106881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b249edca74d22d488600afe60c557c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  is_writing: 0
+  max_characters_per_line: 6
+  max_lines: 4
+  def: {fileID: 483195788171145584}
+  text: {fileID: 7840988452993710242}
 --- !u!1 &906201230352399239
 GameObject:
   m_ObjectHideFlags: 0
@@ -385,7 +403,8 @@ MonoBehaviour:
   color_hover: {r: 0.6232645, g: 0.8867924, b: 0.8867924, a: 1}
   color_selected: {r: 0.5424528, g: 0.95040935, b: 1, a: 1}
   is_on_top: 1
-  text: {fileID: 9043703938844405010}
+  text: {fileID: 5520611949604521837}
+  input: {fileID: 7974498567223592186}
 --- !u!1 &3124620761835057627
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,6 +741,7 @@ MonoBehaviour:
   color_selected: {r: 0.5424528, g: 0.95040935, b: 1, a: 1}
   is_on_top: 0
   text: {fileID: 7840988452993710242}
+  input: {fileID: 1989280331418669102}
 --- !u!1 &8033149587253475426
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,7 +752,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2875856246214703514}
   - component: {fileID: 7543270346683032501}
-  - component: {fileID: 9043703938844405010}
+  - component: {fileID: 5520611949604521837}
+  - component: {fileID: 7974498567223592186}
   m_Layer: 5
   m_Name: text_haut
   m_TagString: Untagged
@@ -768,7 +789,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8033149587253475426}
   m_CullTransparentMesh: 1
---- !u!114 &9043703938844405010
+--- !u!114 &5520611949604521837
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -788,7 +809,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "quantit\xE9\nabstraite\nd'air pur"
+  m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -831,7 +852,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -859,6 +880,23 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7974498567223592186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8033149587253475426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b249edca74d22d488600afe60c557c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  is_writing: 0
+  max_characters_per_line: 6
+  max_lines: 4
+  def: {fileID: 8669018739565678745}
+  text: {fileID: 5520611949604521837}
 --- !u!1 &8266529376265572040
 GameObject:
   m_ObjectHideFlags: 0

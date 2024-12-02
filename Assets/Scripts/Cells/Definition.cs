@@ -9,6 +9,7 @@ public class Definition : Cell
 
     [Header("Components & References")]
     public TextMeshProUGUI text;
+    public DefInputHandler input;
     private MotherCell mother;
 
 
@@ -34,10 +35,16 @@ public class Definition : Cell
     public override void Select()
     {
         base.Select();
+
+        // we select the input field
+        input.Write();
     }
     public override void UnSelect()
     {
         base.UnSelect();
+
+        // we unselect the input field
+        input.StopWriting();
     }
 
     // CONTENT
@@ -50,18 +57,39 @@ public class Definition : Cell
         foreach (char c in content)
         {
             int tmp = c;
-            hex += string.Format("{0:X}", tmp);
+            hex += string.Format("{0:X}", tmp) + ".";
         }
+        // on enlève le dernier point
+        if (hex.Length > 0) {hex = hex[..^1];}
+
+        // on retourne le résultat
         return hex;
     }
     public void SetHex(string hex)
     {
         // on reconvertit en string
         string content = "";
-        for (int i = 0; i < hex.Length; i += 2)
+        /* for (int i = 0; i < hex.Length; i += 2)
         {
-            string hex_char = hex.Substring(i, 2);
+            string hex_char = hex.Substring(i, 2); 
             content += (char)System.Convert.ToInt32(hex_char, 16);
+        } */
+        string[] hex_chars = hex.Split('.');
+        foreach (string hex_char in hex_chars)
+        {
+            // check if the hex_char is empty
+            if (hex_char == "") { continue; }
+
+            // we convert the hex char to a character
+            try
+            {
+                content += (char)System.Convert.ToInt32(hex_char, 16);
+            }
+            catch
+            {
+                content += "?";
+                Debug.LogWarning("(Definition - SetHex) Unrecognized hex character : " + hex_char);
+            }
         }
         text.text = content;
     }

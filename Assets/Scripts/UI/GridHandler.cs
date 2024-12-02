@@ -187,7 +187,7 @@ public class GridHandler : MonoBehaviour
         if (content != "" ) { def_instance.SetContent(content); }
         else
         {
-            def_instance.SetContent("20%_%20"); // default content -> space & space
+            def_instance.SetContent("%_%"); // default content -> "" & ""
         }
 
         return def_instance;

@@ -27,8 +27,8 @@ public class CaseInputHandler : MonoBehaviour
     {
         if (!is_writing) { return; }
 
-        // we check if enter is pressed
-        if (Input.GetKeyDown(KeyCode.Return))
+        // we check if we press escape
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             transform.parent.GetComponent<Cell>().UnSelect();
         }

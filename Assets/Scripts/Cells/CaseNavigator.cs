@@ -186,5 +186,4 @@ public class CaseNavigator : MonoBehaviour
         Definition def = direction.y > 0 ? mother.def1 : mother.def2;
         return def;
     }
-
 }
