@@ -115,6 +115,8 @@ public class GridHandler : MonoBehaviour
 
         // on sauvegarde la grille
         loader.SaveGridToFile(path);
+
+        Debug.Log("Grid saved to " + path);
     }
     public void Clear()
     {
@@ -155,8 +157,7 @@ public class GridHandler : MonoBehaviour
         case_instance.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
         Cell case_component = case_instance.GetComponent<Cell>();
-        case_component.x = x;
-        case_component.y = y;
+        case_component.SetGridPosition(x, y);
 
         // we add the case to the grid
         grid[x, y] = case_component;
@@ -175,15 +176,19 @@ public class GridHandler : MonoBehaviour
 
         return case_instance;
     }
-    public Definition CreateDef(int x, int y, string content = "", bool replace_if_exists = true)
+    public MotherCell CreateDef(int x, int y, string content = "", bool replace_if_exists = true)
     {
         // we create the case
-        Definition def_instance = CreateCell(x, y, def_prefab, replace_if_exists) as Definition;
+        MotherCell def_instance = CreateCell(x, y, def_prefab, replace_if_exists) as MotherCell;
         if (def_instance == null) { return null; }
         def_instance.name = "Def_" + x + "_" + y;
 
         // we set the content
-        def_instance.SetContent(content);
+        if (content != "" ) { def_instance.SetContent(content); }
+        else
+        {
+            def_instance.SetContent("20%_%20"); // default content -> space & space
+        }
 
         return def_instance;
     }
@@ -207,23 +212,6 @@ public class GridHandler : MonoBehaviour
 
         // we create the new case
         Cell new_cell = is_case ? CreateDef(target.x, target.y) : CreateCase(target.x, target.y);
-
-        // we destroy the old case
-        // Destroy(target.gameObject);
-
-        /* // we create the new case
-        GameObject new_cell = Instantiate(is_case ? def_prefab : case_prefab, new Vector3(x, y, 0), Quaternion.identity);
-        new_cell.transform.SetParent(this.transform);
-        new_cell.transform.SetSiblingIndex(index);
-        new_cell.name = is_case ? "Def_" + x + "_" + y : "Case_" + x + "_" + y;
-
-        // we get the case component
-        Cell new_cell_component = new_cell.GetComponent<Cell>();
-        new_cell_component.x = x;
-        new_cell_component.y = y;
-
-        // we add the case to the grid
-        grid[x, y] = new_cell_component; */
 
         // we return the new case
         return new_cell;

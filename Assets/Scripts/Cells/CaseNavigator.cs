@@ -89,12 +89,22 @@ public class CaseNavigator : MonoBehaviour
             direction = navigationDirections[lastNavigationKey];
         }
 
+        // we check if we are in the case of a Definition cell
+        bool navigate_definition = HandleDefinitionNavigation(selected_case, direction);
+
         // we check if we can navigate or we need to wait cooldown
         if (Time.time - lastNavigationTime < navigationCooldown) { return; }
-        if (direction == Vector2Int.zero) { return; }
+        if (direction == Vector2Int.zero & !navigate_definition) { return; }
 
         // we navigate
-        Navigate(direction);
+        if (!navigate_definition)
+        {
+            Navigate(direction);
+            return;
+        }
+
+        // we navigate through the definition
+        NavigateDefinition();
     }
 
     void Navigate(Vector2Int direction)
@@ -105,6 +115,9 @@ public class CaseNavigator : MonoBehaviour
         Cell next_case = grid.GetCell(x, y);
 
         if (next_case == null) return;
+
+        // we check if the case is a MotherCell (we jump on a def)
+        next_case = HandleJumpOnDef(next_case, direction);
 
         // we set the navigation time
         lastNavigationTime = Time.time;
@@ -118,6 +131,60 @@ public class CaseNavigator : MonoBehaviour
         lastNavigationKey = KeyCode.None;
         lastNavigationKeyTime = 0f;
         fastNavigation = false;
+    }
+
+
+    // Definition navigation - a particular case
+    bool HandleDefinitionNavigation(Cell selected_case, Vector2Int direction)
+    {
+        // we check if the selected case is a definition
+        if (!(selected_case is Definition)) { return false; }
+
+        // we check the direction
+        if (direction.y == 0) { return false; } // definitions are only navigable vertically
+
+        // we check if the definition is alone or not
+        Definition def = selected_case as Definition;
+        if (def.GetSibling() == null) { return false; }
+
+        // we check if we are on the top or bottom definition (Y axis is inverted)
+        if (direction.y < 0 && def.is_on_top) { return false; }
+        if (direction.y > 0 && !def.is_on_top) { return false; }
+
+        return true;
+    }
+
+    void NavigateDefinition()
+    {
+        // we get the definition
+        Definition def = selectedCase as Definition;
+
+        // we get the new definition
+        Definition new_def = def.GetSibling();
+
+        // we set the navigation time
+        lastNavigationTime = Time.time;
+
+        // we stop writing and start writing on the new definition
+        selectedCase.UnSelect();
+        new_def.Select();
+    }
+
+    Cell HandleJumpOnDef(Cell original_case, Vector2Int direction)
+    {
+        // we check if the case is a MotherCell
+        if (!(original_case is MotherCell)) { return original_case; }
+
+        // we check if the direction is horizontal
+        if (direction.y == 0) { return original_case; } // we don't care about wheter we are on the top or bottom
+
+        // we get the mother cell
+        MotherCell mother = original_case as MotherCell;
+        if (mother.GetChildrenCount() == 1) { return original_case; } // we don't care if there is only one child
+
+        // we get the definition
+        Definition def = direction.y > 0 ? mother.def1 : mother.def2;
+        return def;
     }
 
 }

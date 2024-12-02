@@ -19,7 +19,7 @@ public class Cell : MonoBehaviour
     public Color color_selected;
 
     [Header("Navigation")]
-    private CaseNavigator navigator;
+    protected CaseNavigator navigator;
 
     // START
     protected virtual void Start()
@@ -30,7 +30,7 @@ public class Cell : MonoBehaviour
     }
 
     // UPDATE
-    void Update()
+    protected virtual void Update()
     {
         // we first check if mouse is over the case
         bool mouse_over = RectTransformUtility.RectangleContainsScreenPoint(image.rectTransform, Input.mousePosition);
@@ -49,7 +49,7 @@ public class Cell : MonoBehaviour
         else { image.color = color_normal; }
 
         // we navigate if the case is selected
-        if (selected)
+        if (selected && navigator != null)
         {
             navigator.UpdateNavigation(this);
         }
@@ -70,7 +70,7 @@ public class Cell : MonoBehaviour
         transform.parent.GetComponent<GridHandler>().SwitchCaseDef(this);
     }
 
-    // Content management
+    // GETTERS
     public virtual string GetContent()
     {
         return "";
@@ -80,4 +80,11 @@ public class Cell : MonoBehaviour
         // nothing
     }
 
+
+    // SETTERS
+    public virtual void SetGridPosition(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
 }
