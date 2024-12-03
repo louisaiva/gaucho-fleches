@@ -195,6 +195,10 @@ public class GridHandler : MonoBehaviour
             def_instance.SetContent("%_%"); // default content -> "" & ""
         }
 
+        // we reset the lines on the up & left
+        GetCell(x, y - 1)?.ResetLine(false);
+        GetCell(x - 1, y)?.ResetLine(true);
+
         return def_instance;
     }
 

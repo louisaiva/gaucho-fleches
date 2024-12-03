@@ -10,6 +10,8 @@ public class Cell : MonoBehaviour
     public bool hovered = false;
     public bool selected = false;
 
+    [Header("Lines")]
+    public LinesHandler lines;
 
     [Header("Graphics & Colors")]
     public Image image;
@@ -27,6 +29,9 @@ public class Cell : MonoBehaviour
         // we get the components
         image = GetComponent<Image>();
         navigator = transform.parent.GetComponent<CaseNavigator>();
+
+        // we get the lines
+        lines = transform.Find("lines").GetComponent<LinesHandler>();
     }
 
     // UPDATE
@@ -60,6 +65,7 @@ public class Cell : MonoBehaviour
         Update();
     }
 
+    // PUBLIC METHODS
     public virtual void Select()
     {
         selected = true;
@@ -75,6 +81,12 @@ public class Cell : MonoBehaviour
         transform.parent.GetComponent<GridHandler>().SwitchCaseDef(this);
     }
 
+    public virtual void ResetLine(bool right= true)
+    {
+        // we reset the line
+        lines.ResetLine(right);
+    }
+
     // GETTERS
     public virtual string GetContent()
     {
@@ -85,6 +97,26 @@ public class Cell : MonoBehaviour
         // nothing
     }
 
+    public virtual Cell GetRightCell()
+    {
+        // we get the right cell
+        return transform.parent.GetComponent<GridHandler>().GetCell(x + 1, y);
+    }
+    public virtual Cell GetLeftCell()
+    {
+        // we get the left cell
+        return transform.parent.GetComponent<GridHandler>().GetCell(x - 1, y);
+    }
+    public virtual Cell GetUpCell()
+    {
+        // we get the up cell
+        return transform.parent.GetComponent<GridHandler>().GetCell(x, y - 1);
+    }
+    public virtual Cell GetDownCell()
+    {
+        // we get the down cell
+        return transform.parent.GetComponent<GridHandler>().GetCell(x, y + 1);
+    }
 
     // SETTERS
     public virtual void SetGridPosition(int x, int y)

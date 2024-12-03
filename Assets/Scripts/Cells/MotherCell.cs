@@ -11,6 +11,10 @@ public class MotherCell : Cell
     public RectTransform line;
     public GridHandler grid;
 
+    [Header("Definitions management")]
+    public bool force_def1_sleep = false;
+    public bool force_def2_sleep = false;
+
     [Header("Arrows")]
     public Image arrow_up;
     public Image arrow_down;
@@ -95,7 +99,14 @@ public class MotherCell : Cell
 
             // we switch the mother cell to a case
             grid.SwitchCaseDef(this);
+            return;
         }
+
+        // here we have at least one child
+        // we set up the direction of the children
+        
+        if (def1 != null && def1.y == 0) { def1.horizontal = false; } // the first definition is on top
+        if (def2 != null && def2.x == 0) { def2.horizontal = true; } // the second definition is on bottom
     }
 
     void UpdateLine()
@@ -119,9 +130,18 @@ public class MotherCell : Cell
 
     void UpdateArrows()
     {
+        // we get the grid spacing
+        if (grid == null) { Start(); }
+        float spacing = grid.GetComponent<GridLayoutGroup>().spacing.y;
+
         // we update the top right arrow
         if (def1 != null)
         {
+
+            // we check if the position of the arrow is okey -> should be (spacing, 0)
+            RectTransform arrow_up_rect = arrow_up.rectTransform;
+            if (arrow_up_rect.anchoredPosition != new Vector2(spacing, 0)) { arrow_up_rect.anchoredPosition = new Vector2(spacing, 0); }
+
             // we check if the direction of the definition is vertical -> the arrow is at the top of the case and points down
             if (!def1.horizontal) { arrow_up.sprite = arrows[1]; }
 
@@ -138,6 +158,11 @@ public class MotherCell : Cell
         // we update the bottom arrow
         if (def2 != null)
         {
+
+            // we check if the position of the arrow is okey -> should be (0, -spacing)
+            RectTransform arrow_down_rect = arrow_down.rectTransform;
+            if (arrow_down_rect.anchoredPosition != new Vector2(0, -spacing)) { arrow_down_rect.anchoredPosition = new Vector2(0, -spacing); }
+
             // we check if the direction of the definition is horizontal -> the arrow is at the bottom left of the case and points right
             if (def2.horizontal) { arrow_down.sprite = arrows[3]; }
 
@@ -147,7 +172,7 @@ public class MotherCell : Cell
     }
 
     // DEFINITIONS MANAGEMENT
-    public void MakeChildSleep(bool up = true)
+    public void MakeChildSleep(bool up = true, bool force = false)
     {
         if (up && def1 != null)
         {
@@ -156,6 +181,9 @@ public class MotherCell : Cell
 
             // we disable the arrow
             arrow_up.gameObject.SetActive(false);
+
+            // we check if we force
+            if (force) { force_def1_sleep = true; }
         }
         else if (!up && def2 != null)
         {
@@ -164,11 +192,14 @@ public class MotherCell : Cell
 
             // we disable the arrow
             arrow_down.gameObject.SetActive(false);
+
+            // we check if we force
+            if (force) { force_def2_sleep = true; }
         }
     }
-    public void WakeUpChild(bool up = true)
+    public void WakeUpChild(bool up = true, bool force = false)
     {
-        if (up && def1 == null)
+        if (up && def1 == null && (!force_def1_sleep || force))
         {
             Transform def1_transform = transform.Find("definitions/text_haut/def_bg_haut");
             def1 = def1_transform.GetComponent<Definition>();
@@ -176,8 +207,11 @@ public class MotherCell : Cell
 
             // we enable the arrow
             arrow_up.gameObject.SetActive(true);
+
+            // we reset the force
+            force_def1_sleep = false;
         }
-        else if (!up && def2 == null)
+        else if (!up && def2 == null && (!force_def2_sleep || force))
         {
             Transform def2_transform = transform.Find("definitions/text_bas/def_bg_bas");
             def2 = def2_transform.GetComponent<Definition>();
@@ -185,6 +219,9 @@ public class MotherCell : Cell
 
             // we enable the arrow
             arrow_down.gameObject.SetActive(true);
+
+            // we reset the force
+            force_def2_sleep = false;
         }
     }
 
@@ -265,6 +302,9 @@ public class MotherCell : Cell
     {
         this.x = x;
         this.y = y;
+
+        // we check if we are properly started
+        if (grid == null) { Start(); }
 
         // we set the children grid position
         def1?.SetGridPosition(x, y);

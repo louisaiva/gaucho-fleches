@@ -25,8 +25,13 @@ public class DefInputHandler : MonoBehaviour
     // UPDATE
     void Update()
     {
-        // we check if we are in writing mode
+
+        // 1 - we check if we are in writing mode
         if (!is_writing) { return; }
+
+
+        // 2 - special keys
+
 
         // we check if we press escape
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -36,7 +41,24 @@ public class DefInputHandler : MonoBehaviour
             return;
         }
 
-        // we check if we press a key
+        // we check if we press backspace
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            // we remove the last letter
+            RemoveLetter();
+            return;
+        }
+
+        // we check if we press suppr
+        else if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            // we delete the whole def
+            def.GetMother().MakeChildSleep(def.is_on_top, true);
+            return;
+        }
+
+
+        // 3 - input characters
         if (Input.anyKeyDown)
         {
             foreach (char letter in Input.inputString)
@@ -50,15 +72,6 @@ public class DefInputHandler : MonoBehaviour
                 }
                 // Debug.Log("input string : " + letter + " (" + hex + ")");
                 
-
-                // we check if the letter is a special character
-                if (letter == '\b')
-                {
-                    // we remove the last letter
-                    RemoveLetter();
-                    continue;
-                }
-
                 // we add the letter
                 AddLetter(letter);
             }
