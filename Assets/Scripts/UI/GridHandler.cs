@@ -12,6 +12,7 @@ public class GridHandler : MonoBehaviour
     public int rows = 17;
     public GameObject case_prefab;
     public GameObject def_prefab;
+    // public GameObject right_def_prefab;
 
     [Header("Opened grid")]
     public Cell[,] grid;
@@ -224,6 +225,9 @@ public class GridHandler : MonoBehaviour
 
         // we restore the content
         if (restore_content) { RestoreCellContent(new_cell); }
+
+        // if we just created a def we force it to update
+        if (is_case) { new_cell.ForceUpdate(); }
 
         // we return the new case
         return new_cell;

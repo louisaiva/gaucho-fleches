@@ -54,6 +54,11 @@ public class Cell : MonoBehaviour
             navigator.UpdateNavigation(this);
         }
     }
+    public void ForceUpdate()
+    {
+        // we force the update of the case
+        Update();
+    }
 
     public virtual void Select()
     {
@@ -64,7 +69,7 @@ public class Cell : MonoBehaviour
         selected = false;
     }
 
-    public void RightClick()
+    public virtual void RightClick()
     {
         // we switch case / def
         transform.parent.GetComponent<GridHandler>().SwitchCaseDef(this);

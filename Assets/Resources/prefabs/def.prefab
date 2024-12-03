@@ -281,6 +281,14 @@ MonoBehaviour:
   def1: {fileID: 8669018739565678745}
   def2: {fileID: 483195788171145584}
   line: {fileID: 2294006087715433745}
+  grid: {fileID: 0}
+  arrow_up: {fileID: 525446989454125791}
+  arrow_down: {fileID: 5858763402273385389}
+  arrows:
+  - {fileID: 494334711, guid: 1f359a0e2e0144c49b873781bdcfd7ec, type: 3}
+  - {fileID: -1510557786, guid: 1f359a0e2e0144c49b873781bdcfd7ec, type: 3}
+  - {fileID: 1099325847, guid: 1f359a0e2e0144c49b873781bdcfd7ec, type: 3}
+  - {fileID: -175915011, guid: 1f359a0e2e0144c49b873781bdcfd7ec, type: 3}
 --- !u!1 &2414202314092309625
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,6 +410,8 @@ MonoBehaviour:
   color_hover: {r: 0.6232645, g: 0.8867924, b: 0.8867924, a: 1}
   color_selected: {r: 0.5424528, g: 0.95040935, b: 1, a: 1}
   is_on_top: 1
+  horizontal: 1
+  length: 1
   text: {fileID: 5520611949604521837}
   input: {fileID: 7974498567223592186}
 --- !u!1 &3124620761835057627
@@ -739,6 +749,8 @@ MonoBehaviour:
   color_hover: {r: 0.6232645, g: 0.8867924, b: 0.8867924, a: 1}
   color_selected: {r: 0.5424528, g: 0.95040935, b: 1, a: 1}
   is_on_top: 0
+  horizontal: 0
+  length: 1
   text: {fileID: 7840988452993710242}
   input: {fileID: 1989280331418669102}
 --- !u!1 &8033149587253475426

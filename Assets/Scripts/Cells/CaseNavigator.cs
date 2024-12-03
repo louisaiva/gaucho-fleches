@@ -54,6 +54,10 @@ public class CaseNavigator : MonoBehaviour
             selectedCase = grid.SwitchCaseDef(selectedCase);
             if (selectedCase == null) { return; }
 
+            // we update the new case so MotherCell update its children & arrows
+            // selectedCase.ForceUpdate();
+
+            // we select the new case
             selectedCase.Select();
             return;
         }

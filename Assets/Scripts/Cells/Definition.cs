@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Numerics;
 
 public class Definition : Cell
 {
     [Header("Definition settings")]
     public bool is_on_top = false; // either the definition is on top or on bottom (in its cell)
+    public bool horizontal; // the direction of the definition (if true, horizontal, if false, vertical)
+    public int length = 1; // the length of the definition (in cells)
 
     [Header("Components & References")]
     public TextMeshProUGUI text;
@@ -24,23 +27,22 @@ public class Definition : Cell
         navigator = mother.GetNavigator();
     }
 
-    // GETTERS
-    public Definition GetSibling()
+    // UPDATE
+    protected override void Update()
     {
-        if (mother == null) { Start(); }
+        base.Update();
 
-        if (is_on_top) { return mother.def2; }
-        else { return mother.def1; }
+        // we update the length of the definition
+        // todo we check where is the next definition cell
+    }
+    public override void RightClick()
+    {
+        // we get the grid
+        GridHandler grid = mother.grid;
+        grid.SwitchCaseDef(mother);
     }
 
-    public MotherCell GetMother()
-    {
-        if (mother == null) { Start(); }
-
-        return mother;
-    }
-
-    // SET CASE
+    // SELECT & UNSELECT
     public override void Select()
     {
         base.Select();
@@ -54,6 +56,27 @@ public class Definition : Cell
 
         // we unselect the input field
         input.StopWriting();
+    }
+
+    // SETTERS
+    public void SwitchDirection()
+    {
+        horizontal = !horizontal;
+    }
+
+    // GETTERS
+    public Definition GetSibling()
+    {
+        if (mother == null) { Start(); }
+
+        if (is_on_top) { return mother.def2; }
+        else { return mother.def1; }
+    }
+    public MotherCell GetMother()
+    {
+        if (mother == null) { Start(); }
+
+        return mother;
     }
 
     // CONTENT
@@ -102,7 +125,6 @@ public class Definition : Cell
         }
         text.text = content;
     }
-
     public override string GetContent()
     {
         return text.text;
