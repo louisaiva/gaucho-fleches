@@ -42,6 +42,14 @@ public class CaseNavigator : MonoBehaviour
             // we reset the navigation not to break the navigation
             ResetNavigation();
 
+            // we check if the selected case is a definition
+            if (selectedCase is Definition)
+            {
+                Definition def = selectedCase as Definition;
+                // we get the mother cell
+                selectedCase = def.GetMother();
+            }
+
             // we switch the case / def
             selectedCase = grid.SwitchCaseDef(selectedCase);
             if (selectedCase == null) { return; }

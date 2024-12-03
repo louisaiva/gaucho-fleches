@@ -8,26 +8,12 @@ public class DefInputHandler : MonoBehaviour
     // custom input handler for the definition input field
     [Header("Input settings")]
     public bool is_writing = false;
-    public int max_characters_per_line = 50;
-    public int max_lines = 4;
-    public float max_width = 40f;
+    public int max_lines = 5;
+    // public float max_width = 40f;
     
     [Header("Components & References")]
     public Definition def;
     public TextMeshProUGUI text;
-
-    /* private char[] authorized_letters = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                                                    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                                                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-                                                    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                                                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                                                    '!', '?', '.', ',', ';', ':', '(', ')', '[', ']', '{', '}',
-                                                    '-', '_', '+', '=', '*', '/', '%', '&', '#', '@', '$', //'€',
-                                                    /* '£', '¥', '§', '°', '²', '³', 'µ', '¤',  '¨', '´', '`', '^',
-                                                    '~', '<', '>', '|', '\\', '"', '\''/* , ' ', '\n', '\t'  }; */
-
-    // characteres interdits : £ ¥ § ° ² ³ µ ¤ ¨ ´ space, \t \n € 
-
 
     // START
     void Start()
@@ -35,7 +21,6 @@ public class DefInputHandler : MonoBehaviour
         // we get the components
         text = GetComponent<TextMeshProUGUI>();
     }
-
 
     // UPDATE
     void Update()
@@ -51,16 +36,10 @@ public class DefInputHandler : MonoBehaviour
             return;
         }
 
-        /* string unrecognized = "non reconized characters : ";
-        // we check if we press an authorized key
-        foreach (char letter in authorized_letters)
+        // we check if we press a key
+        if (Input.anyKeyDown)
         {
-            // we check if the key is recognized
-            try
-            {
-                Input.GetKeyDown(letter.ToString());
-            }
-            catch (System.Exception)
+            foreach (char letter in Input.inputString)
             {
                 // we convert the letter to hexa
                 string hex = "";
@@ -69,30 +48,16 @@ public class DefInputHandler : MonoBehaviour
                     int tmp = c;
                     hex += string.Format("{0:X}", tmp);
                 }
-                // unrecognized += hex + " "; 
-                unrecognized += letter + " ";
-                continue;
-            }
+                // Debug.Log("input string : " + letter + " (" + hex + ")");
+                
 
-            // we check if the key is pressed
-            if (Input.GetKeyDown(letter.ToString()))
-            {
-                // we check if we press shift
-                bool shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-
-                // we add the letter
-                AddLetter(shift ? char.ToUpper(letter) : letter);
-                break;
-            }
-        }
-        // if (unrecognized != "non reconized characters : ") { Debug.Log(unrecognized); } */
-
-        // we check if we press a key
-        if (Input.anyKeyDown)
-        {
-            foreach (char letter in Input.inputString)
-            {
-                // Debug.Log("input string : " + letter);
+                // we check if the letter is a special character
+                if (letter == '\b')
+                {
+                    // we remove the last letter
+                    RemoveLetter();
+                    continue;
+                }
 
                 // we add the letter
                 AddLetter(letter);
@@ -105,126 +70,75 @@ public class DefInputHandler : MonoBehaviour
     {
         // we set the writing mode
         is_writing = true;
+        UpdateMaxLines();
     }
     public void StopWriting()
     {
         // we stop the writing mode
         is_writing = false;
     }
+    public void UpdateMaxLines()
+    {
+        // we check how many lines do we have left (5 - the other definitions lines)
+        int other_def_lines = 0;
+        Definition other_def = def.GetSibling();
+        if (other_def == null) { max_lines = 5; return; }
+
+        // we get the other definition lines
+        other_def_lines = other_def.input.GetLinesCount();
+        max_lines = 5 - other_def_lines;
+    }
 
     // LETTERS MANAGEMENT
-    bool AddLetter(char letter)
+    bool AddLetter(char input)
     {
-        // we check if this is a backspace
-        if (letter == '\b')
-        {
-            // we remove the last letter
-            if (text.text.Length > 0)
-            {
-                text.text = text.text.Substring(0, text.text.Length - 1);
-            }
-            return true;
-        }
-        else if (letter == '\n')
-        {
-            // we add a new line
-            return Return();
-        }
+        string letter = input.ToString();
 
-        // we try to add the letter so we can see if the width is too big
+        // we check if we add a new line
+        if (input == '\n' || input == '\r') { letter = "\\n"; }
+
+        // we try to add the letter so we can see if the height is too big
         text.text += letter;
         text.ForceMeshUpdate();
 
-        // we get the width of the text
-        float width = text.textBounds.size.x;
-        if (width < max_width) { return true; }
-        
+        // we check if the height is too big
+        // the width is adapting itself to the space so we don't need to check it
+        if (GetLinesCount() <= max_lines) { return true; }
+
         // we remove the last letter
-        text.text = text.text.Substring(0, text.text.Length - 1);
-
-        // we check if we can add a new line, and we do if we can
-        if (!Return()) { return false; }
-
-        // we finally add the letter
-        text.text += letter;
-        return true;
+        text.text = text.text[..^letter.Length];
+        return false;
     }
-
-    bool Return()
+    bool RemoveLetter()
     {
-        // we check if we can add a new line
-        if (GetLinesCount() >= max_lines) { return false; }
+        // we check if we have a letter to remove
+        if (text.text.Length == 0) { return false; }
 
-        string last_line = GetLastLine();
-        // we check if the last line is empty
-        if (last_line.Trim().Length == 0) { return false; }
-        // we check if we have a space at the end of the last line
-        if (last_line[last_line.Length - 1] == ' ')
+        // we get the last letter
+        char last_letter = text.text[text.text.Length - 1];
+
+        // we check special characters
+        if (last_letter == 'n' && text.text.Length > 1 && text.text[text.text.Length - 2] == '\\')
         {
-            // we remove the space
-            text.text = text.text.Substring(0, text.text.Length - 1);
+            // we remove the last 2 characters
+            text.text = text.text[..^1];
         }
 
-        // we add a new line
-        text.text += "\n";
+        // we remove the last character
+        text.text = text.text[..^1];
         return true;
     }
 
-    public string GetLastLine()
-    {
-        // we get the last line
-        List<string> lines = GetLines();
-        if (lines.Count == 0) { return ""; }
-        return lines[lines.Count - 1];
-    }
-
+    // GETTERS
     public int GetLinesCount()
     {
-        // we get the lines count
-        /* int lines = 1;
-        int characters_in_line = 0;
-        for (int i = 0; i < text.text.Length; i++)
-        {
-            if (text.text[i] == '\n')
-            {
-                lines++;
-                characters_in_line = 0;
-            }
-            else
-            {
-                characters_in_line++;
-                if (characters_in_line >= max_characters_per_line)
-                {
-                    lines++;
-                    characters_in_line = 0;
-                }
-            }
-        } */
-        int lines = GetLines().Count;
-        return lines;
-    }
+        // calculate the height of the text
+        float height = text.textBounds.size.y;
+        int lines = Mathf.CeilToInt(height / text.fontSize) - 1;
+        if (lines < 0) { lines = 0; }
 
-    public List<string> GetLines()
-    {
-        // we get the lines
-        List<string> lines = new List<string>();
-        string line = "";
-        int characters_in_line = 0;
-        for (int i = 0; i < text.text.Length; i++)
-        {
-            if (text.text[i] == '\n')// || characters_in_line >= max_characters_per_line)
-            {
-                lines.Add(line);
-                line = "";
-                characters_in_line = 0;
-            }
-            else
-            {
-                line += text.text[i];
-                characters_in_line++;
-            }
-        }
-        lines.Add(line);
+        // Debug.Log("height : " + height + " / " + text.fontSize + " = " + lines);
+
         return lines;
     }
 }

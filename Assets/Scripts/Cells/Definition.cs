@@ -27,8 +27,17 @@ public class Definition : Cell
     // GETTERS
     public Definition GetSibling()
     {
+        if (mother == null) { Start(); }
+
         if (is_on_top) { return mother.def2; }
         else { return mother.def1; }
+    }
+
+    public MotherCell GetMother()
+    {
+        if (mother == null) { Start(); }
+
+        return mother;
     }
 
     // SET CASE

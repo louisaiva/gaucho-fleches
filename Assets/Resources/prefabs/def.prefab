@@ -110,7 +110,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 3
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -151,8 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   is_writing: 0
-  max_characters_per_line: 6
-  max_lines: 4
+  max_lines: 5
   def: {fileID: 483195788171145584}
   text: {fileID: 7840988452993710242}
 --- !u!1 &906201230352399239
@@ -852,7 +851,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 3
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -893,8 +892,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   is_writing: 0
-  max_characters_per_line: 6
-  max_lines: 4
+  max_lines: 5
   def: {fileID: 8669018739565678745}
   text: {fileID: 5520611949604521837}
 --- !u!1 &8266529376265572040

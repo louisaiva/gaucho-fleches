@@ -2,6 +2,7 @@ using SFB;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class GridHandler : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class GridHandler : MonoBehaviour
     public GridLayoutGroup grid_layout_group;
     public TextMeshProUGUI grid_name_text;
     public GridSaver loader;
+
+    [Header("Memory")]
+    public Dictionary<Vector2Int, string> case_memory = new Dictionary<Vector2Int, string>();
+    public Dictionary<Vector2Int, string> def_memory = new Dictionary<Vector2Int, string>();
 
     // START
     void Start()
@@ -77,7 +82,6 @@ public class GridHandler : MonoBehaviour
 
         return grid_name;
     }
-
     public void OpenGridFromFile(string path)
     {
         // we load the grid
@@ -202,19 +206,94 @@ public class GridHandler : MonoBehaviour
         // we return the case
         return target;
     }
-    public Cell SwitchCaseDef(Cell target)
+    public Cell SwitchCaseDef(Cell target, bool remember_content = true, bool restore_content = true)
     {
         // we check if the case is already defined
         if (target == null) { return null; }
         
+        // Debug.Log("Switching " + target.name + " to " + (target is Case ? "Definition" : "Case"));
+
+        // we remember the content
+        if (remember_content) { RememberCellContent(target); }
+
         // we want to know if the Cell is a Case or a Defintion
         bool is_case = target is Case;
 
         // we create the new case
         Cell new_cell = is_case ? CreateDef(target.x, target.y) : CreateCase(target.x, target.y);
 
+        // we restore the content
+        if (restore_content) { RestoreCellContent(new_cell); }
+
         // we return the new case
         return new_cell;
+    }
+
+
+    // MEMORY MANAGEMENT
+    public void RememberCellContent(Cell cell)
+    {
+        // we check if the cell is a case or a definition
+        bool is_case = cell is Case;
+
+        // we get the content
+        string content = cell.GetContent();
+
+        // we check if the content is empty
+        if (content == "") { return; }
+
+        // Debug.Log("Remembering " + cell.name + "("+ cell.x +"/"+ cell.y +") : " + content);
+
+        // we create the memory if it doesn't exist
+        if (!HasMemory(cell))
+        {
+            // we add the content to the memory
+            if (is_case)
+            {
+                case_memory.Add(new Vector2Int(cell.x, cell.y), content);
+            }
+            else
+            {
+                def_memory.Add(new Vector2Int(cell.x, cell.y), content);
+            }
+            return;
+        }
+
+        // or we just replace it in the memory
+        if (is_case)
+        {
+            case_memory[new Vector2Int(cell.x, cell.y)] = content;
+        }
+        else
+        {
+            def_memory[new Vector2Int(cell.x, cell.y)] = content;
+        }
+    }
+    public void RestoreCellContent(Cell cell)
+    {
+        // we check if we have the memory
+        if (!HasMemory(cell)) { return; }
+
+        // we check if the cell is a case or a definition
+        bool is_case = cell is Case;
+
+        // we get the content
+        string content = is_case ? case_memory[new Vector2Int(cell.x, cell.y)] : def_memory[new Vector2Int(cell.x, cell.y)];
+
+        // we set the content
+        cell.SetContent(content);
+
+        // we remove the content from the memory
+        if (is_case) { case_memory.Remove(new Vector2Int(cell.x, cell.y)); }
+        else { def_memory.Remove(new Vector2Int(cell.x, cell.y)); }
+    }
+    public bool HasMemory(Cell cell)
+    {
+        // we check if the cell is a case or a definition
+        bool is_case = cell is Case;
+
+        // we check if the memory contains the key
+        return is_case ? case_memory.ContainsKey(new Vector2Int(cell.x, cell.y)) : def_memory.ContainsKey(new Vector2Int(cell.x, cell.y));
     }
 
 }
