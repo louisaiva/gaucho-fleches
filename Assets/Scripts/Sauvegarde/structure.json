@@ -7,17 +7,13 @@
     "cells":{
         "0_0": {
             "type": "case",
-            "content": "A"
+            "content": "A",
+            "expanded": "0.0"
         },
         "0_1": {
             "type": "def",
             "content": "ceci est un pain",
-            "arrows": {
-                "right": true,
-                "down": true,
-                "right_down": false,
-                "down_right": false
-            }
+            "horizontal": "0.0"
         }
     }
 }

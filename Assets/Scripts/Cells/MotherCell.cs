@@ -23,9 +23,11 @@ public class MotherCell : Cell
     // START
     protected override void Start()
     {
+        if (grid != null) { return; }
+
         base.Start();
 
-        // we get the components
+        // we get the components if the transform are not disabled
         def1 = transform.Find("definitions/text_haut/def_bg_haut").GetComponent<Definition>();
         def2 = transform.Find("definitions/text_bas/def_bg_bas").GetComponent<Definition>();
 
@@ -58,8 +60,8 @@ public class MotherCell : Cell
 
         // we update the arrows
         UpdateArrows();
-    }
 
+    }
     void UpdateDefinitions()
     {
         // we check if we are properly started
@@ -108,7 +110,6 @@ public class MotherCell : Cell
         if (def1 != null && def1.y == 0) { def1.horizontal = false; } // the first definition is on top
         if (def2 != null && def2.x == 0) { def2.horizontal = true; } // the second definition is on bottom
     }
-
     void UpdateLine()
     {
         if (line == null) { return; }
@@ -127,7 +128,6 @@ public class MotherCell : Cell
         float y = -def1_rect.rect.height;
         line.anchoredPosition = new Vector2(line.anchoredPosition.x, y);
     }
-
     void UpdateArrows()
     {
         // we get the grid spacing
@@ -171,13 +171,17 @@ public class MotherCell : Cell
         }
     }
 
+
     // DEFINITIONS MANAGEMENT
     public void MakeChildSleep(bool up = true, bool force = false)
     {
-        if (up && def1 != null)
+        if (up)
         {
-            def1.transform.parent.gameObject.SetActive(false);
-            def1 = null;
+            if (def1 != null)
+            {
+                def1.transform.parent.gameObject.SetActive(false);
+                def1 = null;
+            }
 
             // we disable the arrow
             arrow_up.gameObject.SetActive(false);
@@ -185,10 +189,13 @@ public class MotherCell : Cell
             // we check if we force
             if (force) { force_def1_sleep = true; }
         }
-        else if (!up && def2 != null)
+        else
         {
-            def2.transform.parent.gameObject.SetActive(false);
-            def2 = null;
+            if (def2 != null)
+            {
+                def2.transform.parent.gameObject.SetActive(false);
+                def2 = null;
+            }
 
             // we disable the arrow
             arrow_down.gameObject.SetActive(false);
@@ -225,6 +232,41 @@ public class MotherCell : Cell
         }
     }
 
+    public string GetDefHorizontals()
+    {
+        string directions = "";
+        if (def1 != null) { directions += def1.IsHorizontal() ? "1" : "0"; }
+        directions += ".";
+        if (def2 != null) { directions += def2.IsHorizontal() ? "1" : "0"; }
+        return directions;
+    }
+    public void SetDefHorizontals(string directions)
+    {
+        
+        // we split the directions
+        string[] dirs = directions.Split('.');
+
+        // check the up definition
+        if (dirs[0] == "1") { def1.SetHorizontal(true); }
+        else if (dirs[0] == "0") { def1.SetHorizontal(false); }
+        else { MakeChildSleep(true,true); }
+
+        // we check if we have only one definition
+        if (dirs.Length == 1)
+        {
+            MakeChildSleep(false, true);
+            return;
+        }
+
+        // check the down definition
+        if (dirs[1] == "1")
+        {
+            if (def2 == null) { WakeUpChild(false,true); }
+            def2.SetHorizontal(true);
+        }
+        else if (dirs[1] == "0" && def2 != null) { def2.SetHorizontal(false); }
+        else { MakeChildSleep(false,true); }
+    }
 
     // SELECT & UNSELECT
     public override void Select()
@@ -264,38 +306,10 @@ public class MotherCell : Cell
         // we split the content
         string[] contents = content.Split(new string[] { "%_%" }, System.StringSplitOptions.None);
 
-        /* Definition[] defs = new Definition[] { def1, def2 };
-        for (int i=0; i<contents.Length; i++)
-        {
-            // we check if we have a definition
-            if (contents[i] == "") { MakeChildSleep(i == 0); }
-            else
-            {
-                // we enable the definition
-                WakeUpChild(i == 0);
-
-                // we set the content of the definition
-                defs[i].SetHex(contents[i]);
-            }
-        } */
-
         // we set the content of the children
         def1?.SetHex(contents[0]);
         if (contents.Length == 1) { return; }
         def2?.SetHex(contents[1]);
-
-        /* // we check if we have 1 or 2 definitions
-        if (contents.Length == 1)
-        {
-            // we disable the second definition
-            def2.gameObject.SetActive(false);
-            def2 = null;
-        }
-        else
-        {
-            // we enable the second definition
-            def2.SetHex(contents[1]);
-        } */
 
     }
     public override void SetGridPosition(int x, int y)

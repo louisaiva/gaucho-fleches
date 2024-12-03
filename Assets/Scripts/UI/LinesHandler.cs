@@ -117,7 +117,7 @@ public class LinesHandler : MonoBehaviour
     {
         // we enter the hover state
         line.GetComponent<Image>().color = hover_color;
-        Debug.Log("Hovering " + line.name);
+        // Debug.Log("Hovering " + line.name);
 
         if (line == line_right) {hover_right = true;}
         else if (line == line_down) {hover_down = true;}
@@ -131,7 +131,7 @@ public class LinesHandler : MonoBehaviour
         else if (line == line_down) { hover_down = false; }
     }
 
-    private void ExpandLine(RectTransform line)
+    public void ExpandLine(RectTransform line)
     {
         Vector2 size = line.sizeDelta;
 

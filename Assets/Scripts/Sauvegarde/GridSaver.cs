@@ -70,16 +70,15 @@ public class GridSaver : MonoBehaviour
 
                 json += "\"" + cell_id + "\": {\n\t\t\t";
                 json += "\"type\": \"" + (is_case ? "case" : "def") + "\",\n\t\t\t";
-                json += "\"content\": \"" + cell.GetContent() + "\"";
+                json += "\"content\": \"" + cell.GetContent() + "\",\n\t\t\t";
 
-                if (!is_case)
+                if (is_case)
                 {
-                    json += ",\n\t\t\t\"arrows\": {\n\t\t\t\t";
-                    json += "\"right\": " + "false" + ",\n\t\t\t\t";
-                    json += "\"down\": " + "false" + ",\n\t\t\t\t";
-                    json += "\"right_down\": " + "false" + ",\n\t\t\t\t";
-                    json += "\"down_right\": " + "false" + "\n\t\t\t";
-                    json += "}";
+                    json += "\"expanded\": \"" + (cell as Case).GetExpandedLines() + "\"";
+                }
+                else
+                {
+                    json += "\"horizontal\": \"" + (cell as MotherCell).GetDefHorizontals() + "\"";
                 }
 
                 json += "\n\t\t}";
@@ -185,8 +184,8 @@ public class GridSaver : MonoBehaviour
 
         // on prépare les variables
         int width = 0;
-        int x,y;
-        string type = "";
+        // int x,y;
+        bool is_case = false;
 
         // on lit le fichier
         string[] lines = System.IO.File.ReadAllLines(path);
@@ -242,31 +241,80 @@ public class GridSaver : MonoBehaviour
             else if (current_path_in_json[0] == "cells" && current_path_in_json.Count == 3)
             {
                 string[] cell_id = current_path_in_json[1].Split('_');
-                x = int.Parse(cell_id[0]);
-                y = int.Parse(cell_id[1]);
+                int x = int.Parse(cell_id[0]);
+                int y = int.Parse(cell_id[1]);
+                Log("Cell: " + x + "_" + y);
 
                 if (current_path_in_json[2] == "type")
                 {
-                    type = parts[1].Replace(",", "").Replace(" ", "").Replace("\"", "");
-                    Log("Type: " + type);
+                    string type = parts[1].Replace(",", "").Replace(" ", "").Replace("\"", "");
+                    Log("Type: " + type + " (" + x + "_" + y + ")");
+
+                    // on regarde si c'est une case ou une définition
+                    if (type == "case") { is_case = true; }
+                    else if (type == "def") { is_case = false; }
+
+                    // we check the type of the existing cell
+                    Cell existing_cell = grid.GetCell(x, y);
+                    if (existing_cell == null)
+                    {
+                        LogWarning("(GridSaver - Loading - type) Cell does not exist: " + x + "_" + y);
+                        continue;
+                    }
+                    
+                    // we switch the cell type
+                    if (is_case == existing_cell is Case) { continue; }
+                    grid.SwitchCaseDef(existing_cell, false, false);
                 }
                 else if (current_path_in_json[2] == "content")
                 {
                     string content = parts[1].Replace(",", "").Replace(" ", "").Replace("\"", "");
-                    Log("Content: " + content);
+                    Log("Content: " + content + " (" + x + "_" + y + ")");
 
-                    // on ajoute la case à la grille
-                    if (type == "case")
+                    // on check si la case existe
+                    Cell existing_cell = grid.GetCell(x, y);
+                    if (existing_cell == null)
                     {
-                        grid.CreateCase(x, y, content);
+                        LogWarning("(GridSaver - Loading - content) Cell does not exist: " + x + "_" + y);
+                        continue;
                     }
-                    else if (type == "def")
+                    
+                    // we set the content
+                    existing_cell.SetContent(content);
+                }
+                else if (current_path_in_json[2] == "expanded")
+                {
+                    string expanded = parts[1].Replace(",", "").Replace(" ", "").Replace("\"", "");
+                    Log("Expanded: " + expanded);
+
+                    // on check si la case existe
+                    Cell existing_cell = grid.GetCell(x, y);
+                    if (existing_cell == null)
                     {
-                        grid.CreateDef(x, y, content);
+                        LogWarning("(GridSaver - Loading - lines) Cell does not exist: " + x + "_" + y);
+                        continue;
                     }
+
+                    // on set les lignes
+                    existing_cell.SetExpandedLines(expanded);
+                }
+                else if (current_path_in_json[2] == "horizontal")
+                {
+                    string horizontal = parts[1].Replace(",", "").Replace(" ", "").Replace("\"", "");
+                    Log("Horizontal: " + horizontal);
+
+                    // on check si la case existe
+                    Cell existing_cell = grid.GetCell(x, y);
+                    if (existing_cell == null)
+                    {
+                        LogWarning("(GridSaver - Loading - horizontal) Cell does not exist: " + x + "_" + y);
+                        continue;
+                    }
+
+                    // on set les horizontales
+                    (existing_cell as MotherCell).SetDefHorizontals(horizontal);
                 }
             }
-
         }
 
 
@@ -309,15 +357,15 @@ public class GridSaver : MonoBehaviour
     // LOGGING DEBUG
     void Log(string message)
     {
-        if (debug) { Log(message); }
+        if (debug) { Debug.Log(message); }
     }
     void LogWarning(string message)
     {
-        if (debug) { LogWarning(message); }
+        if (debug) { Debug.LogWarning(message); }
     }
     void LogError(string message)
     {
-        if (debug) { LogError(message); }
+        if (debug) { Debug.LogError(message); }
     }
 
 }

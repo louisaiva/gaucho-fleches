@@ -62,24 +62,27 @@ public class GridHandler : MonoBehaviour
         {
             for (int y = 0; y < rows; y++)
             {
-                CreateCase(x, y);
-
-                /* GameObject case_instance = Instantiate(case_prefab, new Vector3(x, y, 0), Quaternion.identity);
-                case_instance.transform.SetParent(this.transform);
-                case_instance.name = "Case_" + x + "_" + y;
-
-                Cell case_component = case_instance.GetComponent<Cell>();
-                case_component.x = x;
-                case_component.y = y;
-
-                // we add the case to the grid
-                grid[x, y] = case_component; */
+                if (x == 0 && y%2 == 0)
+                {
+                    CreateDef(x, y);
+                }
+                else if (y == 0 && x%2 == 0)
+                {
+                    CreateDef(x, y);
+                }
+                else
+                {
+                    CreateCase(x, y);
+                }
             }
         }
 
         // we set the grid name
         grid_name = loader.GenerateGridName(grid_folder_path);
         grid_name_text.text = grid_name.Replace(".json", "");
+
+        // we log
+        Debug.Log("Empty grid generated with " + columns + " columns & " + rows + " rows");
 
         return grid_name;
     }
@@ -139,20 +142,27 @@ public class GridHandler : MonoBehaviour
     public Cell CreateCell(int x, int y, GameObject prefab, bool replace_if_exists = true)
     {
         // we check if the case already exists
-        if (grid[x, y] != null)
+        if (!replace_if_exists && grid[x, y] != null) { return null; }
+        
+
+        // we get the index with x & y
+        int index = x * rows + y;
+
+        // we check if their is already a cell at this position
+        Cell existing_cell = grid[x, y];
+        if (existing_cell != null)
         {
-            if (replace_if_exists)
-            {
-                Destroy(grid[x, y].gameObject);
-            }
-            else
-            {
-                return null;
-            }
+            // we get the index of the existing cell
+            index = existing_cell.transform.GetSiblingIndex();
+
+            // we destroy the existing cell
+            Destroy(existing_cell.gameObject);
         }
 
-        // we calculate the index with x & y
-        int index = x * rows + y;
+        // we check if the index is valid
+        if (index >= transform.childCount) { index = transform.childCount; }
+        
+
 
         // we create the case
         GameObject case_instance = Instantiate(prefab, new Vector3(x, y, 0), Quaternion.identity);
@@ -161,6 +171,7 @@ public class GridHandler : MonoBehaviour
         case_instance.name = "Cell_" + x + "_" + y;
         case_instance.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
+        // we get the cell component
         Cell case_component = case_instance.GetComponent<Cell>();
         case_component.SetGridPosition(x, y);
 

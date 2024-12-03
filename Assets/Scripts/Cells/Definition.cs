@@ -63,6 +63,10 @@ public class Definition : Cell
     {
         horizontal = !horizontal;
     }
+    public void SetHorizontal(bool horizontal)
+    {
+        this.horizontal = horizontal;
+    }
 
     // GETTERS
     public Definition GetSibling()
@@ -77,6 +81,10 @@ public class Definition : Cell
         if (mother == null) { Start(); }
 
         return mother;
+    }
+    public bool IsHorizontal()
+    {
+        return horizontal;
     }
 
     // CONTENT
@@ -133,6 +141,5 @@ public class Definition : Cell
     {
         text.text = content;
     }
-
 
 }

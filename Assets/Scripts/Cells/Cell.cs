@@ -81,10 +81,55 @@ public class Cell : MonoBehaviour
         transform.parent.GetComponent<GridHandler>().SwitchCaseDef(this);
     }
 
+    // LINE MANAGEMENT
     public virtual void ResetLine(bool right= true)
     {
+        // we get the line
+        if (lines == null) { Start(); }
+
         // we reset the line
         lines.ResetLine(right);
+    }
+    public virtual void ExpandLine(bool right = true)
+    {
+        // we check if we are well started
+        if (lines == null) { Start(); }
+
+        // we check if we can expand the line
+        Cell target = right ? GetRightCell() : GetDownCell();
+        if (target == null || !(target is Case)) { return; }
+
+        // we get the line
+        RectTransform line = right ? lines.line_right : lines.line_down;
+
+        // we expand the line
+        lines.ExpandLine(line);
+    }
+    public virtual string GetExpandedLines()
+    {
+        string expanded = "";
+
+        // check the right line
+        expanded += lines.expanded_right ? "1" : "0";
+        expanded += ".";
+        expanded += lines.expanded_down ? "1" : "0";
+
+        return expanded;
+    }
+    public virtual void SetExpandedLines(string expanded)
+    {
+        // check the type of the cell
+        if (this is not Case) { return; }
+
+        // we split the string
+        string[] parts = expanded.Split('.');
+        if (parts.Length != 2) { return; }
+
+        // we expand the lines
+        if (parts[0] == "1") { ExpandLine(true); }
+        if (parts[1] == "1") { ExpandLine(false); }
+        // lines.ExpandLine(parts[0] == "1" ? lines.line_right : null);
+        // lines.ExpandLine(parts[1] == "1" ? lines.line_down : null);
     }
 
     // GETTERS
@@ -97,6 +142,7 @@ public class Cell : MonoBehaviour
         // nothing
     }
 
+    // CELL GETTERS
     public virtual Cell GetRightCell()
     {
         // we get the right cell
