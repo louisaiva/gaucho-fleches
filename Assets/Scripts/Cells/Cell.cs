@@ -9,7 +9,7 @@ public class Cell : MonoBehaviour
     public int y;
     public bool hovered = false;
     public bool selected = false;
-    public bool stanby = false;
+    public bool standby = false;
     public GridHandler grid;
 
     [Header("Lines")]
@@ -43,12 +43,12 @@ public class Cell : MonoBehaviour
     protected virtual void Update()
     {
         // we first check if we aren't pressing alt or if we are in static mode
-        if (Input.GetKey(grid.GetComponentInParent<GridBodyWindowManager>().move_key) || stanby)
+        if (Input.GetKey(grid.GetComponentInParent<GridBodyWindowManager>().move_key) || standby)
         {
             // we set the hover to false
             hovered = false;
             // selected = false;
-            if (stanby) { selected = false; }
+            if (standby) { selected = false; }
         }
         else
         {
@@ -71,7 +71,7 @@ public class Cell : MonoBehaviour
         else { image.color = color_normal; }
 
         // we navigate if the case is selected
-        if (!stanby && selected && navigator != null)
+        if (!standby && selected && navigator != null)
         {
             navigator.UpdateNavigation(this);
         }
@@ -96,6 +96,12 @@ public class Cell : MonoBehaviour
     {
         // we switch case / def
         transform.parent.GetComponent<GridHandler>().SwitchCaseDef(this);
+    }
+
+    public virtual void Standby(bool value)
+    {
+        // we set the standby mode
+        standby = value;
     }
 
     // LINE MANAGEMENT

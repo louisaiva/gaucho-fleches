@@ -267,6 +267,13 @@ public class MotherCell : Cell
         else { MakeChildSleep(false,true); }
     }
 
+    public override void Standby(bool value)
+    {
+        // we set the standby mode
+        def1?.Standby(value);
+        def2?.Standby(value);
+    }
+
     // SELECT & UNSELECT
     public override void Select()
     {

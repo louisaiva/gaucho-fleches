@@ -44,23 +44,11 @@ public class CanvasScreenShot : MonoBehaviour
     }
 
     // takes global screenshot (lol it's a gridshot bcz we take a screenshot of the grid)
-    public void Gridshot(Canvas input_canva, int px_per_cell)
+    public void Gridshot(Canvas canva, int px_per_cell)
     {
-        //Reset the position so that both UI will be in the-same place if we make the duplicate a child
-        transform.position = Vector3.zero;
-        transform.rotation = Quaternion.Euler(Vector3.zero);
-
-        // we duplicate the canva & set the new parent
-        GameObject canva_go = Instantiate(input_canva.gameObject);
-        canva_go.transform.SetParent(gameObject.transform);
-
-        // we change the parameters of the duplicated canva
-        Canvas canva = canva_go.GetComponent<Canvas>();
-        canva.renderMode = RenderMode.ScreenSpaceOverlay;
-
-
+        
         // we get the grid
-        GridHandler grid = canva_go.transform.GetChild(0).GetComponent<GridHandler>();
+        GridHandler grid = canva.transform.GetChild(0).GetComponent<GridHandler>();
         gridRect = grid.GetComponent<RectTransform>();
 
 
@@ -106,9 +94,6 @@ public class CanvasScreenShot : MonoBehaviour
 
         // we take the screenshot
         StartCoroutine(_Screenshot(Screen.width, Screen.height));
-
-        // we delete the duplicated canva
-        // Destroy(canva_go);
     }
 
     private IEnumerator _Screenshot(int width = 0, int height = 0)

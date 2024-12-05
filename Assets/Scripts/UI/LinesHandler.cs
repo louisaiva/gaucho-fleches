@@ -44,8 +44,14 @@ public class LinesHandler : MonoBehaviour
     // UPDATE
     void Update()
     {
-        // we check if we are in stanby mode or pressing alt
-        if (cell.stanby || Input.GetKey(grid.GetComponentInParent<GridBodyWindowManager>().move_key)) { return; }
+        // we check if we are in standby mode or pressing alt
+        if (cell.standby || Input.GetKey(grid.GetComponentInParent<GridBodyWindowManager>().move_key))
+        {
+            // we reset the lines
+            ExitHover(line_right);
+            ExitHover(line_down);
+            return;
+        }
 
         // update the line width
         if (auto_line_width) {UpdateLineWidth();}

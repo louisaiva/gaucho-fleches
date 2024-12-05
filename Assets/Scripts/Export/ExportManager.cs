@@ -65,8 +65,22 @@ public class ExportManager : MonoBehaviour
             go.SetActive(false);
         }
 
+        
+        //Reset the position so that both UI will be in the-same place if we make the duplicate a child
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.Euler(Vector3.zero);
+
+        // we duplicate the canva & set the new parent
+        GameObject canva_go = Instantiate(target_canvas.gameObject);
+        canva_go.transform.SetParent(gameObject.transform);
+
+        // we change the parameters of the duplicated canva
+        Canvas canva = canva_go.GetComponent<Canvas>();
+        canva.renderMode = RenderMode.ScreenSpaceOverlay;
+
+
         // we take a screenshot
-        screenshoter.Gridshot(target_canvas, px_per_cell);
+        screenshoter.Gridshot(canva, px_per_cell);
 
     }
 

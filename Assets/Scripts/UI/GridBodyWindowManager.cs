@@ -3,6 +3,9 @@ using UnityEngine;
 public class GridBodyWindowManager : MonoBehaviour
 {
 
+    [Header("Standby")]
+    bool standby = false;
+
     [Header("Moving around settings")]
     public KeyCode move_key = KeyCode.LeftAlt;
     public bool is_moving = false;
@@ -40,6 +43,9 @@ public class GridBodyWindowManager : MonoBehaviour
     // UPDATE
     void Update()
     {
+        // we check if we are in standby mode
+        if (standby) { return; }
+
         // we check if the mouse wheel is used
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
@@ -56,6 +62,13 @@ public class GridBodyWindowManager : MonoBehaviour
 
     }
 
+    public void Standby(bool value=true)
+    {
+        standby = value;
+
+        // we apply it to the grid
+        grid.GetComponent<GridHandler>().Standby(value);
+    }
 
     // ZOOM
     public void Zoom(float zoom)

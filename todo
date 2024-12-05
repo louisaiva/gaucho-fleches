@@ -2,13 +2,14 @@
 -- BUGS TO FIX
 
 [x] bouton suppr pour supprimer le contenu d'une case
+[ ] bouton handler qui change le cursor en main quand on hover un bouton
 
 
 -- FEATURES TO ADD
 
 [ ] export :
     [x] dupliquer la grille dans l'exporter,
-    [ ] figer (stanby) toutes les cellules au moment de l'export
+    [ ] figer (standby) toutes les cellules au moment de l'export
     [x] calculer le zoom pour avoir N*N pixels par case
     [x] puis pour chaque case ? on fait un screen et on déplace jusqu'à la prochaine case
     [ ] régler le calcul de la taille de chaque screenshot : https://docs.unity3d.com/ScriptReference/Texture2D.ReadPixels.html

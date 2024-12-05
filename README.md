@@ -8,7 +8,8 @@ Ce projet est en cours de développement. Il est actuellement utilisable, mais l
 
 ## Installation
 
-Build v1.0.0 disponible - pas encore d'export de grilles
+-[Build v1.0.0](https://github.com/louisaiva/gaucho-fleches/releases/tag/v1.0.0) disponible - pas encore d'export de grilles
+-ou alors clonage de ce repo et ouverture du projet avec Unity 6 (6000.0.28f1)
 
 ## Utilisation
 

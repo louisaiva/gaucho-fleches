@@ -143,6 +143,15 @@ public class GridHandler : MonoBehaviour
         grid = new Cell[0, 0];
     }
 
+    public void Standby(bool value = true)
+    {
+        // we put all cells in standby
+        foreach (Cell cell in grid)
+        {
+            cell?.Standby(value);
+        }
+    }
+
     // CELLS CREATION
     public Cell CreateCell(int x, int y, GameObject prefab, bool replace_if_exists = true)
     {
@@ -252,7 +261,6 @@ public class GridHandler : MonoBehaviour
         // we return the new case
         return new_cell;
     }
-
 
     // MEMORY MANAGEMENT
     public void RememberCellContent(Cell cell)
