@@ -3,6 +3,13 @@ using UnityEngine;
 public class GridBodyWindowManager : MonoBehaviour
 {
 
+    [Header("Moving around settings")]
+    public KeyCode move_key = KeyCode.LeftAlt;
+    public bool is_moving = false;
+    public float moving_speed = 1f;
+    public Texture2D handCursorTexture;
+    public Texture2D arrowCursorTexture;
+
     [Header("Zoom settings")]
     public float zoom_speed = 1f;
     public float zoom_min = 0.5f;
@@ -30,8 +37,7 @@ public class GridBodyWindowManager : MonoBehaviour
         rect.sizeDelta = new Vector2(rect.sizeDelta.x, parent.sizeDelta.y - target.sizeDelta.y);
     }
 
-
-    // ZOOM
+    // UPDATE
     void Update()
     {
         // we check if the mouse wheel is used
@@ -44,8 +50,14 @@ public class GridBodyWindowManager : MonoBehaviour
             // we reset the zoom
             ResetZoom();
         }
+
+        // we check if we are moving
+        UpdateMoving();
+
     }
 
+
+    // ZOOM
     public void Zoom(float zoom)
     {
 
@@ -82,7 +94,6 @@ public class GridBodyWindowManager : MonoBehaviour
         // we set the position of the grid
         grid.anchoredPosition += difference;
     }
-
     public void ResetZoom()
     {
         // reset the position of the grid
@@ -91,4 +102,38 @@ public class GridBodyWindowManager : MonoBehaviour
         // set scale on 1 1 1
         transform.localScale = new Vector3(1, 1, 1);
     }
+
+
+    // MOVING VIEW
+    public void UpdateMoving()
+    {
+        // change the cursor
+        if (Input.GetKeyDown(move_key))
+        {
+            Cursor.SetCursor(arrowCursorTexture, Vector2.zero, CursorMode.Auto);
+        }
+        else if (Input.GetKeyUp(move_key))
+        {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        }
+
+        // we check if we hold space and we drag the mouse with the left click
+        if (Input.GetKey(move_key) && Input.GetMouseButton(0) && !is_moving)
+        {
+            is_moving = true;
+        }
+        else if (is_moving && (!Input.GetKey(move_key) || !Input.GetMouseButton(0)))
+        {
+            is_moving = false;
+        }
+
+        // we check if we are moving
+        if (!is_moving) { return; }
+
+        // we move the grid
+        Vector2 delta_position = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        // Debug.Log("Moving " + delta_position);
+        grid.anchoredPosition += delta_position*moving_speed;
+    }
+
 }

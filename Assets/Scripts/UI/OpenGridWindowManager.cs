@@ -21,7 +21,7 @@ public class OpenGridWindowManager : MonoBehaviour
         open_grid_window.SetActive(true);
     }
 
-    // GRID OPENING / CLOSING
+    // GRID OPENING
     public void OpenGridFile()
     {
         // we open a window dialog to select a file
@@ -53,7 +53,6 @@ public class OpenGridWindowManager : MonoBehaviour
 
         Debug.Log("Grid opened from file: " + path);
     }
-
     public void CreateNewGrid()
     {
         // on désactive la fenetre d'ouverture de grille
@@ -75,6 +74,7 @@ public class OpenGridWindowManager : MonoBehaviour
         Debug.Log("New grid created: " + grid_name);
     }
 
+    // GRID CLOSING
     public void CloseGrid()
     {
         string grid_name = grid_handler.grid_name;
@@ -91,5 +91,26 @@ public class OpenGridWindowManager : MonoBehaviour
         open_grid_window.SetActive(true);
 
         Debug.Log("Grid " + grid_name + " closed");
+
+
+        // we hide the save before quit window
+        GameObject.Find("ui").GetComponent<SaveBeforeQuitWindow>().Hide();
     }
+    public void SaveAndCloseGrid()
+    {
+        // we save the grid
+        bool saved = grid_handler.Save();
+
+        // we close the grid
+        if (saved) {CloseGrid();}
+    }
+    public void SafelyCloseGrid()
+    {
+        // we check if we need to save the grid
+        // todo we check the UndoManager if we modified the grid
+
+        // we show the save before quit window
+        GameObject.Find("ui").GetComponent<SaveBeforeQuitWindow>().Show();
+    }
+
 }

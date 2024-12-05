@@ -98,18 +98,22 @@ public class GridHandler : MonoBehaviour
         grid_name_text.text = grid_name.Replace(".json", "");
     }
 
-
     // GRID OPERATIONS
-    public void Save()
+    public void VoidSave()
+    {
+        Save();
+    }
+    public bool Save()
     {
         string path = grid_folder_path + grid_name;
+        Debug.Log("Saving grid to " + path);
 
         // we check if we have a folder_path & a grid_name
         if (grid_folder_path == "" || grid_name == "" || !System.IO.File.Exists(path))
         {
             // we get the new path
             string new_path = StandaloneFileBrowser.SaveFilePanel("Sauvegarder la grille", "", grid_name, "json");
-            if (new_path == "") { return; }
+            if (new_path == "") { return false; }
 
             // we get the new name
             string new_name = loader.GetNameFromPath(new_path);
@@ -122,9 +126,10 @@ public class GridHandler : MonoBehaviour
         }
 
         // on sauvegarde la grille
-        loader.SaveGridToFile(path);
+        bool saved = loader.SaveGridToFile(path);
 
         Debug.Log("Grid saved to " + path);
+        return saved;
     }
     public void Clear()
     {
@@ -164,21 +169,21 @@ public class GridHandler : MonoBehaviour
         
 
 
-        // we create the case
-        GameObject case_instance = Instantiate(prefab, new Vector3(x, y, 0), Quaternion.identity);
-        case_instance.transform.SetParent(this.transform);
-        case_instance.transform.SetSiblingIndex(index);
-        case_instance.name = "Cell_" + x + "_" + y;
-        case_instance.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        // we create the cell
+        GameObject cell_instance = Instantiate(prefab, new Vector3(x, y, 0), Quaternion.identity);
+        cell_instance.transform.SetParent(this.transform);
+        cell_instance.transform.SetSiblingIndex(index);
+        cell_instance.name = "Cell_" + x + "_" + y;
+        cell_instance.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
         // we get the cell component
-        Cell case_component = case_instance.GetComponent<Cell>();
-        case_component.SetGridPosition(x, y);
+        Cell cell_component = cell_instance.GetComponent<Cell>();
+        cell_component.SetGridPosition(x, y);
 
-        // we add the case to the grid
-        grid[x, y] = case_component;
+        // we add the cell to the grid
+        grid[x, y] = cell_component;
 
-        return case_component;
+        return cell_component;
     }
     public Case CreateCase(int x, int y, string content = "", bool replace_if_exists = true)
     {

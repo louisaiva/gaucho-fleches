@@ -37,12 +37,16 @@ public class GridSaver : MonoBehaviour
 
     [Header("References")]
     public GridHandler grid;
+    public HelpHandler helper;
 
     // Start is called before the first frame update
     void Start()
     {
         // we get the grid handler
         grid = GetComponent<GridHandler>();
+
+        // we get the helper
+        helper = GameObject.Find("ui/help").GetComponent<HelpHandler>();
     }
 
     // SAVING
@@ -139,6 +143,7 @@ public class GridSaver : MonoBehaviour
 
         // log
         Log("Grid saved to file: " + path);
+        helper.RegisterLog("Grille sauvegardée dans le fichier: " + GetNameFromPath(path));
 
         return true;
     }

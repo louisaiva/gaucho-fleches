@@ -25,6 +25,10 @@ public class Definition : Cell
         // we get the mother cell
         mother = transform.parent.parent.parent.GetComponent<MotherCell>();
         navigator = mother.GetNavigator();
+
+        // we get the grid
+        grid = transform.parent.parent.parent.parent.GetComponent<GridHandler>();
+        Debug.Log("Definition grid: " + grid);
     }
 
     // UPDATE

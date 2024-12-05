@@ -7,11 +7,11 @@ public class MotherCell : Cell
     // a cell that have 1 or 2 children cells (definitions)
     [Header("Mother cell settings")]
     public Definition def1;
-    public Definition def2;
     public RectTransform line;
-    public GridHandler grid;
+    public Definition def2;
 
     [Header("Definitions management")]
+    public bool defs_initialized = false;
     public bool force_def1_sleep = false;
     public bool force_def2_sleep = false;
 
@@ -23,19 +23,18 @@ public class MotherCell : Cell
     // START
     protected override void Start()
     {
-        if (grid != null) { return; }
-
         base.Start();
+     
+        // we set the image alpha to 0
+        image.color = new Color(1, 1, 1, 0);
+
+        if (defs_initialized) { return; }
 
         // we get the components if the transform are not disabled
         def1 = transform.Find("definitions/text_haut/def_bg_haut").GetComponent<Definition>();
         def2 = transform.Find("definitions/text_bas/def_bg_bas").GetComponent<Definition>();
 
-        // we set the image alpha to 0
-        image.color = new Color(1, 1, 1, 0);
-
-        // we get the grid handler
-        grid = transform.parent.GetComponent<GridHandler>();
+        defs_initialized = true;
     }
 
     // UPDATE
@@ -314,8 +313,7 @@ public class MotherCell : Cell
     }
     public override void SetGridPosition(int x, int y)
     {
-        this.x = x;
-        this.y = y;
+        base.SetGridPosition(x, y);
 
         // we check if we are properly started
         if (grid == null) { Start(); }

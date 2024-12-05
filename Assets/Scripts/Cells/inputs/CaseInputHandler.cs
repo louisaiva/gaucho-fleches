@@ -32,7 +32,7 @@ public class CaseInputHandler : MonoBehaviour
         {
             transform.parent.GetComponent<Cell>().UnSelect();
         }
-        else if (Input.GetKeyDown(KeyCode.Backspace))
+        else if (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Delete))
         {
             input_text.text = "";
         }

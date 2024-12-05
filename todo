@@ -1,4 +1,23 @@
 
 -- BUGS TO FIX
 
-[ ] when loading json, def with one definition still have line
+[x] when loading json, def with one definition still have line
+[x] pouvoir bouger la grille en maintenant espace + drag gauche
+[x] ajouter des lignes à gauche et en haut de la grille
+
+[x] remplace space par bouton alt et
+    [x] mettre curseur direct quand on appuie sur alt
+    [x] check directement dans les caseinput & definput que alt n'est pas pressé
+
+[x] régler problème bouton enregistrer
+
+[ ] export :
+    [x] dupliquer la grille dans l'exporter,
+    [ ] figer (stanby) toutes les cellules au moment de l'export
+    [x] calculer le zoom pour avoir N*N pixels par case
+    [x] puis pour chaque case ? on fait un screen et on déplace jusqu'à la prochaine case
+    [ ] régler le calcul de la taille de chaque screenshot : https://docs.unity3d.com/ScriptReference/Texture2D.ReadPixels.html
+    [ ] ensuite on concatène les screens correctement
+    [ ] on enregistre ça au fichier png ? puis convertit en pdf ?
+    
+    [ ] faire pareil en désactivant les réponses

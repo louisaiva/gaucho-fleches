@@ -9,6 +9,8 @@ public class Cell : MonoBehaviour
     public int y;
     public bool hovered = false;
     public bool selected = false;
+    public bool stanby = false;
+    public GridHandler grid;
 
     [Header("Lines")]
     public LinesHandler lines;
@@ -32,21 +34,36 @@ public class Cell : MonoBehaviour
 
         // we get the lines
         lines = transform.Find("lines").GetComponent<LinesHandler>();
+
+        // we get the grid
+        grid = transform.parent.GetComponent<GridHandler>();
     }
 
     // UPDATE
     protected virtual void Update()
     {
-        // we first check if mouse is over the case
-        bool mouse_over = RectTransformUtility.RectangleContainsScreenPoint(image.rectTransform, Input.mousePosition);
+        // we first check if we aren't pressing alt or if we are in static mode
+        if (Input.GetKey(grid.GetComponentInParent<GridBodyWindowManager>().move_key) || stanby)
+        {
+            // we set the hover to false
+            hovered = false;
+            // selected = false;
+            if (stanby) { selected = false; }
+        }
+        else
+        {
+            // we then check if mouse is over the case
+            bool mouse_over = RectTransformUtility.RectangleContainsScreenPoint(image.rectTransform, Input.mousePosition);
 
-        // we check the hover state
-        if (mouse_over && !hovered) { hovered = true; } // we enter the case
-        else if (!mouse_over && hovered) { hovered = false; } // we leave the case
+            // we check the hover state
+            if (mouse_over && !hovered) { hovered = true; } // we enter the case
+            else if (!mouse_over && hovered) { hovered = false; } // we leave the case
 
-        if (hovered && !selected && Input.GetMouseButtonDown(0)) { Select(); } // we click on the case
-        else if (hovered && Input.GetMouseButtonDown(1)) { RightClick(); } // we right click on the case
-        else if (!hovered && selected && Input.GetMouseButtonDown(0)) { UnSelect(); } // we click outside the case
+            // we check the selection state
+            if (hovered && !selected && Input.GetMouseButtonDown(0)) { Select(); } // we click on the case
+            else if (hovered && Input.GetMouseButtonDown(1)) { RightClick(); } // we right click on the case
+            else if (!hovered && selected && Input.GetMouseButtonDown(0)) { UnSelect(); } // we click outside the case
+        }
 
         // we change the color with the state
         if (selected) { image.color = color_selected; }
@@ -54,7 +71,7 @@ public class Cell : MonoBehaviour
         else { image.color = color_normal; }
 
         // we navigate if the case is selected
-        if (selected && navigator != null)
+        if (!stanby && selected && navigator != null)
         {
             navigator.UpdateNavigation(this);
         }
@@ -82,6 +99,17 @@ public class Cell : MonoBehaviour
     }
 
     // LINE MANAGEMENT
+    public virtual void ActivateLeftUpLinesIfOnSide()
+    {
+        // we check that lines is not null
+        if (lines == null) { Start(); }
+
+        // we check if x=0
+        if (x == 0) { lines.ActivateLeftLine(); }
+
+        // we check if y=0
+        if (y == 0) { lines.ActivateUpLine(); }
+    }
     public virtual void ResetLine(bool right= true)
     {
         // we get the line
@@ -169,5 +197,11 @@ public class Cell : MonoBehaviour
     {
         this.x = x;
         this.y = y;
+
+        // we update the lines if we are not definition
+        if (this is not Definition)
+        {
+            ActivateLeftUpLinesIfOnSide();
+        }
     }
 }

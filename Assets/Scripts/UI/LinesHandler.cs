@@ -44,6 +44,8 @@ public class LinesHandler : MonoBehaviour
     // UPDATE
     void Update()
     {
+        // we check if we are in stanby mode or pressing alt
+        if (cell.stanby || Input.GetKey(grid.GetComponentInParent<GridBodyWindowManager>().move_key)) { return; }
 
         // update the line width
         if (auto_line_width) {UpdateLineWidth();}
@@ -109,6 +111,31 @@ public class LinesHandler : MonoBehaviour
         // we reset the line
         if (right && expanded_right) {TrimLine(line_right);}
         else if (!right && expanded_down) {TrimLine(line_down);}
+    }
+
+    public void ActivateLeftLine()
+    {
+        // we activate the left line
+        RectTransform left_line = transform.Find("left").GetComponent<RectTransform>();
+        if (left_line == null) { return; }
+
+        // we activate the line
+        left_line.gameObject.SetActive(true);
+
+        // we set the line width/height
+        left_line.sizeDelta = new Vector2(line_width, left_line.sizeDelta.y);
+    }
+    public void ActivateUpLine()
+    {
+        // we activate the left line
+        RectTransform up_line = transform.Find("up").GetComponent<RectTransform>();
+        if (up_line == null) { return; }
+
+        // we activate the line
+        up_line.gameObject.SetActive(true);
+
+        // we set the line width/height
+        up_line.sizeDelta = new Vector2(up_line.sizeDelta.x, line_width);
     }
 
 
