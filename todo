@@ -1,15 +1,10 @@
 
 -- BUGS TO FIX
 
-[x] when loading json, def with one definition still have line
-[x] pouvoir bouger la grille en maintenant espace + drag gauche
-[x] ajouter des lignes à gauche et en haut de la grille
+[x] bouton suppr pour supprimer le contenu d'une case
 
-[x] remplace space par bouton alt et
-    [x] mettre curseur direct quand on appuie sur alt
-    [x] check directement dans les caseinput & definput que alt n'est pas pressé
 
-[x] régler problème bouton enregistrer
+-- FEATURES TO ADD
 
 [ ] export :
     [x] dupliquer la grille dans l'exporter,
