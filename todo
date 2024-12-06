@@ -1,19 +1,26 @@
 
--- BUGS TO FIX
+-- PATCHS TO DO
 
 [x] bouton suppr pour supprimer le contenu d'une case
 [ ] bouton handler qui change le cursor en main quand on hover un bouton
-
+[ ] modifier couleur du bg de l'input de la taille de la grille à créer
 
 -- FEATURES TO ADD
 
+[ ] copier/coller sur les definitions !
+[ ] nouveau type de cellule qui peut intégrer une partie d'une image / du texte
+[ ] quand on sélectionne une definition ça met en surbrillance les lines / colores les cases du mot
+[ ] changement de la typo des lettres ! (à sauvegarder dans le fichier .json)
+    [ ] changement des couleurs d'export (case/def)
+
 [ ] export :
     [x] dupliquer la grille dans l'exporter,
-    [ ] figer (standby) toutes les cellules au moment de l'export
+    [x] figer (standby) toutes les cellules au moment de l'export
     [x] calculer le zoom pour avoir N*N pixels par case
     [x] puis pour chaque case ? on fait un screen et on déplace jusqu'à la prochaine case
-    [ ] régler le calcul de la taille de chaque screenshot : https://docs.unity3d.com/ScriptReference/Texture2D.ReadPixels.html
-    [ ] ensuite on concatène les screens correctement
-    [ ] on enregistre ça au fichier png ? puis convertit en pdf ?
+    [x] régler le calcul de la taille de chaque screenshot : https://docs.unity3d.com/ScriptReference/Texture2D.ReadPixels.html
+    [x] ensuite on concatène les screens correctement
+    [x] on enregistre ça au fichier png ?
+    [x] faire pareil en désactivant les réponses
+    [ ] puis convertit en pdf ?
     
-    [ ] faire pareil en désactivant les réponses

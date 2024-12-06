@@ -51,6 +51,10 @@ public class CaseInputHandler : MonoBehaviour
 
 
     // PUBLIC METHODS
+    public void DeleteLetter()
+    {
+        input_text.text = "";
+    }
 
     public void SetLetter(string letter)
     {

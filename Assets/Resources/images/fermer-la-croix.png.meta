@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      fermer-la-croix_0: -8216917993659323112
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,10 +25,10 @@ public class CanvasScreenShot : MonoBehaviour
     [Header("Parametres globaux")]
     RectTransform gridRect;
     RenderTexture gridshot;
-    public int beggining_x = 0;
-    public int beggining_y = 0;
-    public int grid_max_x = 0;
-    public int grid_max_y = 0;
+    public int spacing_offset_x = 0;
+    public int spacing_offset_y = 0;
+    public int export_width = 0;
+    public int export_height = 0;
 
     [Header("Suivi de la progression")]
     public int current_x = 0;
@@ -44,26 +45,99 @@ public class CanvasScreenShot : MonoBehaviour
     }
 
     // takes global screenshot (lol it's a gridshot bcz we take a screenshot of the grid)
-    public void Gridshot(Canvas canva, int px_per_cell)
+    public void Gridshot(Canvas canva, int px_per_cell, bool solutions)
     {
         
         // we get the grid
         GridHandler grid = canva.transform.GetChild(0).GetComponent<GridHandler>();
+
+        // we prepare the grid
+        grid = PrepareGrid(grid,solutions);
+
+
+        // we apply the scale and move the grid to the top left corner
+        ApplyScaleAndMoveGridToTopLeftCorner(grid, canva, px_per_cell);
+
+        RebuildLayout(gridRect);
+
+        // we create the render texture
+        CreateRenderTexture();
+
+        // we calculate the size of the first screenshot
+        Vector2Int size = CalculateNextShotSize();
+
+        // we take the first screenshot
+        StartCoroutine(_Screenshot(size.x, size.y));
+    }
+
+
+    // preparing exportation
+    public void Reset()
+    {
+        // we reset all the variables
+        current_x = 0;
+        current_y = 0;
+        last_shot_width = 0;
+        last_shot_height = 0;
+        spacing_offset_x = 0;
+        spacing_offset_y = 0;
+        export_width = 0;
+        export_height = 0;
+        gridRect = null;
+        gridshot = null;
+    }
+    private void RebuildLayout(RectTransform rectTransform)
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+        Canvas.ForceUpdateCanvases();
+    }
+
+    private GridHandler PrepareGrid(GridHandler grid, bool solutions)
+    {
         gridRect = grid.GetComponent<RectTransform>();
 
+        // we delete the scripts we don't need
+        Destroy(grid.GetComponent<GridSaver>());
+        Destroy(grid.GetComponent<CaseNavigator>());
+        Debug.Log("We have duplicated the canva & deleted the scripts of the grid child");
 
+        // we rebuild the layout
+        RebuildLayout(gridRect);
+
+        // we freeze the grid
+        grid.Freeze();
+        Debug.Log("We have frozen the grid");
+
+        // we hide the solutions
+        if (!solutions) {grid.DeleteSolutions();}
+        if (!solutions) {Debug.Log("solutions deleted");}
+
+        return grid;
+    }
+
+    private void ApplyScaleAndMoveGridToTopLeftCorner(GridHandler grid, Canvas canva, int px_per_cell)
+    {
         // we get the size of the cell
-        RectTransform rectTransform = grid.transform.GetChild(0).GetComponent<RectTransform>();
-        Vector2 cellScreenSize = GetScreenSize(rectTransform, canva);
-        Debug.Log("Cell Screen Size: " + cellScreenSize);
+        RectTransform cellRect = grid.transform.GetChild(0).GetComponent<RectTransform>();
+        if (cellRect != null)
+        {
+            Debug.Log("cell is : " + cellRect + " ("+cellRect.name+")" + " and its size is : " + cellRect.rect.size);
+        }
+        else
+        {
+            Debug.Log("Cell is null");
+        }
+        Vector2 cellScreenSize = GetRectScreenSize(cellRect, canva);
+        Debug.Log("Cell appears on screen with those dimensions : " + cellScreenSize);
 
         // we apply a scale to the grid to reach the desired size
         int scale = (int)(px_per_cell / cellScreenSize.x);
         grid.transform.localScale = new Vector3(scale, scale, 1);
+        Debug.Log("We applied the scale " + scale + " to the grid, so that the cell appears on screen with those dimensions : " + GetRectScreenSize(cellRect, canva));
 
         // we get the size of the spacing
         GridLayoutGroup gridLayoutGroup = grid.GetComponent<GridLayoutGroup>();
-        int spacing = ((int) gridLayoutGroup.spacing.x) * scale;
+        int spacing = ((int)gridLayoutGroup.spacing.x) * scale;
 
         // we move the grid to put the first cell in the top left
         gridLayoutGroup.childAlignment = TextAnchor.UpperLeft;
@@ -71,128 +145,15 @@ public class CanvasScreenShot : MonoBehaviour
         gridRect.anchorMin = new Vector2(0, 1);
         gridRect.anchorMax = new Vector2(0, 1);
         gridRect.anchoredPosition = new Vector2(spacing, -spacing);
-        beggining_x = spacing;
-        beggining_y = -spacing;
+        spacing_offset_x = spacing;
+        spacing_offset_y = -spacing;
 
         // we calculate the size of the grid
-        grid_max_x = grid.columns * (px_per_cell + spacing) + spacing;
-        grid_max_y = grid.rows * (px_per_cell + spacing) + spacing;
-
-        // we create the render texture
-        int texture_width_x = 0;
-        while (texture_width_x < grid_max_x)
-        {
-            texture_width_x += Screen.width;
-        }
-        int texture_width_y = 0;
-        while (texture_width_y < grid_max_y)
-        {
-            texture_width_y += Screen.height;
-        }
-        gridshot = new RenderTexture(texture_width_x, texture_width_y, 24);
-
-
-        // we take the screenshot
-        StartCoroutine(_Screenshot(Screen.width, Screen.height));
+        export_width = grid.columns * (px_per_cell + spacing) + spacing;
+        export_height = grid.rows * (px_per_cell + spacing) + spacing;
     }
 
-    private IEnumerator _Screenshot(int width = 0, int height = 0)
-    {
-        //////////////////////////////////////Finally Take ScreenShot///////////////////////////////
-        yield return new WaitForEndOfFrame();
-        Texture2D screenImage = new Texture2D(width, height);
-        //Get Image from screen
-        screenImage.ReadPixels(new Rect(0, 0, width, height), 0, Screen.height - height);
-        screenImage.Apply();
-
-        Debug.Log("Took screenshot, grid is at " + current_x + ", " + current_y);
-
-        //Convert to png
-        byte[] pngBytes = screenImage.EncodeToPNG();
-
-        // string path = "/CanvasScreenShot.png";
-
-        // FOR TESTING/DEBUGGING PURPOSES ONLY. COMMENT THIS
-        string path = Application.persistentDataPath + "/gridhsot " + current_x + ", " + current_y + ".png";
-        System.IO.File.WriteAllBytes(path, pngBytes);
-        Debug.Log("partial gridshot is at "+path);
-
-        // we set the last shot size
-        last_shot_width = width;
-        last_shot_height = height;
-
-        //Notify functions that are subscribed to this event that picture is taken then pass in image bytes as png
-        OnScreenshotTaken?.Invoke(pngBytes);
-
-        ///////////////////////////////////RE-ENABLE OBJECTS
-        ///
-    }
-
-    private void OnPartOfScreenshotTaken(byte[] pngArray)
-    {
-        // we create a texture from the screenshot
-        Texture2D screenImage = new Texture2D(last_shot_width, last_shot_height);
-        screenImage.LoadImage(pngArray);
-
-        // we calculate the position of the screenshot
-        /* int x = current_x + beggining_x;
-        int y = current_y + beggining_y; 
-
-        // we add the part of the screenshot to the gridshot
-        BlitTextureToRenderTexture(screenImage, gridshot,
-            new Vector2(x, y), new Vector2(last_shot_width, last_shot_height)); */
-
-        // we check if we have finished a row
-        if (current_x + last_shot_width >= grid_max_x)
-        {
-            // we check if we have finished the grid
-            if (current_y + last_shot_height >= grid_max_y)
-            {
-                // we take the final screenshot
-                Texture2D finalImage = new Texture2D(grid_max_x, grid_max_y);
-                RenderTexture.active = gridshot;
-                finalImage.ReadPixels(new Rect(0, 0, grid_max_x, grid_max_y), 0, 0);
-                finalImage.Apply();
-                byte[] finalPngBytes = finalImage.EncodeToPNG();
-                // OnPictureTaken?.Invoke(finalPngBytes);
-                return;
-            }
-            else
-            {
-                // we do the next row
-                current_x = 0;
-                current_y += last_shot_height;
-
-                Debug.Log("Next row, grid is at " + current_x + ", " + current_y);
-            }
-        }
-        else
-        {
-            // we do the next cell
-            current_x += last_shot_width;
-
-            Debug.Log("Next column, grid is at " + current_x + ", " + current_y);
-        }
-
-        // we move the grid
-        gridRect.anchoredPosition = new Vector2(-current_x + beggining_x, current_y + beggining_y);
-
-        // calculate the size of the next screenshot
-        int width = grid_max_x - current_x;
-        int height = grid_max_y - current_y;
-        if (width > Screen.width) { width = Screen.width; }
-        if (height > Screen.height) { height = Screen.height; }
-
-        Debug.Log("Moving grid to " + (-current_x + beggining_x) + ", " + (current_y + beggining_y)
-            + " for a screenshot of " + width + "x" + height);
-
-        // we take the next screenshot
-        StartCoroutine(_Screenshot(width, height));
-    }
-
-    // Utilities
-
-    public Vector2 GetScreenSize(RectTransform rectTransform, Canvas canvas = null)
+    private Vector2 GetRectScreenSize(RectTransform rectTransform, Canvas canvas = null)
     {
         // Get the size of the rect in local space
         Vector2 localSize = rectTransform.rect.size;
@@ -216,35 +177,176 @@ public class CanvasScreenShot : MonoBehaviour
         return screenSize;
     }
 
+    private void CreateRenderTexture()
+    {
+        // Create the RenderTexture
+        gridshot = new RenderTexture(export_width, export_height, 24);
+        gridshot.Create();
+    }
+
+
+
+
+
+    // MAIN DURING EXPORTATION
+    private IEnumerator _Screenshot(int width = 0, int height = 0)
+    {
+        //////////////////////////////////////Finally Take ScreenShot///////////////////////////////
+        yield return new WaitForEndOfFrame();
+
+        Canvas.ForceUpdateCanvases();
+        List<Canvas> canvases = new List<Canvas>();
+
+        foreach (Transform child in gridRect)
+        {
+            Cell cell = child.GetComponent<Cell>();
+            Canvas canvas = null;
+            if (cell is MotherCell)
+            {
+                // we refresh all the canvas
+                canvas = child.GetComponent<Canvas>();
+                Debug.Log("Canvas found for def : " + cell.name + " - "+ canvas.gameObject.name);
+            }
+            else if (cell is Case)
+            {
+                // we refresh the case
+                canvas = child.GetComponent<Case>().lines.GetComponent<Canvas>();
+                Debug.Log("Canvas found for case " + cell.name + " - "+ canvas.gameObject.name);
+            }
+            if (!canvas)
+            {
+                Debug.Log("No canvas found for " + cell.name);
+                continue;
+            }
+            canvases.Add(canvas);
+
+            canvas.enabled = false;
+            canvas.enabled = true;
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        Texture2D screenImage = new Texture2D(width, height);
+        //Get Image from screen
+        screenImage.ReadPixels(new Rect(0, Screen.height - height, width, height), 0, 0);
+        screenImage.Apply();
+
+        Debug.Log("Took screenshot, grid is at " + current_x + ", " + current_y);
+
+        //Convert to png
+        byte[] pngBytes = screenImage.EncodeToPNG();
+
+        // string path = "/CanvasScreenShot.png";
+
+        // FOR TESTING/DEBUGGING PURPOSES ONLY. COMMENT THIS
+        /* string path = Application.persistentDataPath + "/gridhsot " + current_x + ", " + current_y + ".png";
+        System.IO.File.WriteAllBytes(path, pngBytes);
+        Debug.Log("partial gridshot is at " + path); */
+
+        // we set the last shot size
+        last_shot_width = width;
+        last_shot_height = height;
+
+        //Notify functions that are subscribed to this event that picture is taken then pass in image bytes as png
+        OnScreenshotTaken?.Invoke(pngBytes);
+
+        ///////////////////////////////////RE-ENABLE OBJECTS
+        ///
+    }
+
+    private void OnPartOfScreenshotTaken(byte[] pngArray)
+    {
+        // we create a texture from the screenshot
+        Texture2D screenImage = new Texture2D(last_shot_width, last_shot_height);
+        screenImage.LoadImage(pngArray);
+
+        // we add the part of the screenshot to the gridshot
+        BlitTextureToRenderTexture(screenImage, gridshot, new Vector2(current_x,current_y), new Vector2(last_shot_width, last_shot_height));
+
+        // we check if we have finished a row
+        if (current_x + last_shot_width >= export_width)
+        {
+            // we check if we have finished the grid
+            if (current_y + last_shot_height >= export_height)
+            {
+                // we take the final screenshot
+                Texture2D finalImage = new Texture2D(export_width, export_height);
+                RenderTexture.active = gridshot;
+                finalImage.ReadPixels(new Rect(0, 0, export_width, export_height), 0, 0);
+                finalImage.Apply();
+                byte[] finalPngBytes = finalImage.EncodeToPNG();
+                OnPictureTaken?.Invoke(finalPngBytes);
+                return;
+            }
+            else
+            {
+                // we do the next row
+                current_x = 0;
+                current_y += last_shot_height;
+
+                Debug.Log("Next row, grid is at " + current_x + ", " + current_y);
+            }
+        }
+        else
+        {
+            // we do the next cell
+            current_x += last_shot_width;
+
+            Debug.Log("Next column, grid is at " + current_x + ", " + current_y);
+        }
+
+        // we move the grid
+        gridRect.anchoredPosition = new Vector2(-current_x + spacing_offset_x, current_y + spacing_offset_y);
+
+        Vector2Int size = CalculateNextShotSize();
+
+        Debug.Log("Moving grid to " + (-current_x + spacing_offset_x) + ", " + (current_y + spacing_offset_y)
+            + " for a screenshot of " + size.x + "x" + size.y);
+
+        // we take the next screenshot
+        StartCoroutine(_Screenshot(size.x, size.y));
+    }
+
+
+    // during exportation
+    private Vector2Int CalculateNextShotSize()
+    {
+        // calculate the size of the next screenshot
+        int width = export_width - current_x;
+        int height = export_height - current_y;
+        if (width > Screen.width) { width = Screen.width; }
+        if (height > Screen.height) { height = Screen.height; }
+
+        return new Vector2Int(width, height);
+    }
+
     public void BlitTextureToRenderTexture(Texture2D texture, RenderTexture target, Vector2 position, Vector2 size)
     {
         // Set the RenderTexture as active
         RenderTexture.active = target;
 
         // Get the RenderTexture dimensions
-        int rtWidth = target.width;
-        int rtHeight = target.height;
+        int target_width = target.width;
+        int target_height = target.height;
 
         // Convert position and size to UV coordinates (0 to 1 range)
-        Rect uvRect = new Rect(
-            position.x / rtWidth,
-            1 - (position.y + size.y) / rtHeight,  // Flip Y because UVs are bottom-left origin
-            size.x / rtWidth,
-            size.y / rtHeight
-        );
+        Rect uvRect = new Rect(0, 1, 1, -1);
 
-        // Draw the texture to the RenderTexture
+        // setup the GL context
         GL.PushMatrix();
-        GL.LoadPixelMatrix(0, rtWidth, 0, rtHeight); // Set up pixel-perfect rendering
-        Graphics.DrawTexture(
-            new Rect(position.x, rtHeight - position.y - size.y, size.x, size.y),
-            texture,
-            uvRect,
-            0, 0, 0, 0
-        );
+        GL.LoadPixelMatrix(0, target_width, 0, target_height); // Set up pixel-perfect rendering
+
+        // get the rect where we will write on the target
+        Rect target_rect = new Rect(position.x, target_height - position.y - size.y, size.x, size.y);
+
+        // Draw the texture
+        Graphics.DrawTexture(target_rect, texture, uvRect, 0,0,0,0);
+
+        // Reset the active RenderTexture
         GL.PopMatrix();
 
         // Reset the active RenderTexture
         RenderTexture.active = null;
     }
+
 }

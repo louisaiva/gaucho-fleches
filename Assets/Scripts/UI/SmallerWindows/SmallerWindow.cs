@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SaveBeforeQuitWindow : MonoBehaviour
+public class SmallerWindow : MonoBehaviour
 {
     [Header("Grid Body Window")]
     public GridBodyWindowManager grid_body_window;

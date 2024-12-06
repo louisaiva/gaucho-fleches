@@ -145,12 +145,48 @@ public class GridHandler : MonoBehaviour
 
     public void Standby(bool value = true)
     {
+        Debug.Log("Standby " + value + " on all cells of the grid : " + grid + " (" + grid?.GetLength(0) + "x" + grid?.GetLength(1) + ")");
+
         // we put all cells in standby
         foreach (Cell cell in grid)
         {
             cell?.Standby(value);
         }
     }
+
+    public void Freeze()
+    {
+        // we reconstruct the grid
+        ReconstructGrid();
+        foreach (Cell cell in grid)
+        {
+            cell?.UnSelect();
+            cell?.Standby(true);
+        }
+    }
+    public void ReconstructGrid()
+    {
+        // we fill back the grid[,] by looking in the children of the grid
+        grid = new Cell[columns, rows];
+        foreach (Transform child in transform)
+        {
+            Cell cell = child.GetComponent<Cell>();
+            grid[cell.x, cell.y] = cell;
+        }
+    }
+
+    public void DeleteSolutions()
+    {
+        // we delete all the solutions
+        foreach (Cell cell in grid)
+        {
+            if (cell is Case)
+            {
+                (cell as Case).DeleteContent();
+            }
+        }
+    }
+
 
     // CELLS CREATION
     public Cell CreateCell(int x, int y, GameObject prefab, bool replace_if_exists = true)

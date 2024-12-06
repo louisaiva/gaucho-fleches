@@ -39,6 +39,10 @@ public class Case : Cell
     }
 
     // CONTENT
+    public void DeleteContent()
+    {
+        input_handler.DeleteLetter();
+    }
     public override string GetContent()
     {
         return letter.text;

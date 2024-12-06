@@ -34,12 +34,12 @@ public class ExportManager : MonoBehaviour
         // we get the path
         string grid_name = grid.grid_name.Replace(".json", "");
         string path = StandaloneFileBrowser.SaveFilePanel("Exporter la grille", "", grid_name, "png");
-        if (path == "") { return; }
-
-        // we save the picture to a file
-        // string path = "/CanvasScreenShot.png";
-        System.IO.File.WriteAllBytes(path, pngArray);
-        Debug.Log("Exported grid at " + path);
+        if (path != "")
+        {
+            // we save the picture to a file
+            System.IO.File.WriteAllBytes(path, pngArray);
+            Debug.Log("Exported grid at " + path);
+        }
 
         // we delete all exporter children
         foreach (Transform child in transform)
@@ -54,18 +54,16 @@ public class ExportManager : MonoBehaviour
         }
     }
 
-    public void ExportGrid()
+    public void ExportGrid(bool leave_solutions=true)
     {
+        // we reset the screenshoter
+        screenshoter.Reset();
+
+        Debug.Log("Exporting grid " + (leave_solutions ? "with" : "without") + " solutions");
+
         // we get the target canvas
         Canvas target_canvas = grid.transform.parent.GetComponent<Canvas>();
 
-        // we disable the gameobjects
-        foreach (GameObject go in to_disable)
-        {
-            go.SetActive(false);
-        }
-
-        
         //Reset the position so that both UI will be in the-same place if we make the duplicate a child
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.Euler(Vector3.zero);
@@ -74,13 +72,19 @@ public class ExportManager : MonoBehaviour
         GameObject canva_go = Instantiate(target_canvas.gameObject);
         canva_go.transform.SetParent(gameObject.transform);
 
+        // we disable the gameobjects
+        foreach (GameObject go in to_disable)
+        {
+            go.SetActive(false);
+        }
+
         // we change the parameters of the duplicated canva
         Canvas canva = canva_go.GetComponent<Canvas>();
         canva.renderMode = RenderMode.ScreenSpaceOverlay;
 
 
         // we take a screenshot
-        screenshoter.Gridshot(canva, px_per_cell);
+        screenshoter.Gridshot(canva, px_per_cell, leave_solutions);
 
     }
 

@@ -28,7 +28,7 @@ public class Definition : Cell
 
         // we get the grid
         grid = transform.parent.parent.parent.parent.GetComponent<GridHandler>();
-        Debug.Log("Definition grid: " + grid);
+        // Debug.Log("Definition grid: " + grid);
     }
 
     // UPDATE
