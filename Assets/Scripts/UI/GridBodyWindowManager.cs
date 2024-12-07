@@ -10,8 +10,7 @@ public class GridBodyWindowManager : MonoBehaviour
     public KeyCode move_key = KeyCode.LeftAlt;
     public bool is_moving = false;
     public float moving_speed = 1f;
-    public Texture2D handCursorTexture;
-    public Texture2D arrowCursorTexture;
+    public CursorHandler cursor;
 
     [Header("Zoom settings")]
     public float zoom_speed = 1f;
@@ -31,6 +30,9 @@ public class GridBodyWindowManager : MonoBehaviour
         // we get the components
         parent = transform.parent.GetComponent<RectTransform>();
         rect = GetComponent<RectTransform>();
+
+        // we get the cursor
+        cursor = GameObject.Find("ui").GetComponent<CursorHandler>();
     }
 
     // ON RESIZE
@@ -123,11 +125,13 @@ public class GridBodyWindowManager : MonoBehaviour
         // change the cursor
         if (Input.GetKeyDown(move_key))
         {
-            Cursor.SetCursor(arrowCursorTexture, Vector2.zero, CursorMode.Auto);
+            // Cursor.SetCursor(arrowCursorTexture, Vector2.zero, CursorMode.Auto);
+            cursor.AddCursorDemand(gameObject, "arrow", 2);
         }
         else if (Input.GetKeyUp(move_key))
         {
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            // Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            cursor.RemoveCursorDemand(gameObject);
         }
 
         // we check if we hold space and we drag the mouse with the left click

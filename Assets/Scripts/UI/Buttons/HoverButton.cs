@@ -11,11 +11,12 @@ public abstract class HoverButton : MonoBehaviour
     [Header("Components")]
     public Graphic graphic;
     public RectTransform rect_to_click;
-    public Texture2D handCursorTexture;
+    public CursorHandler cursor;
 
     [Header("Colors")]
     public Color base_color = Color.red;
     public Color hover_color = Color.red;
+    public Color disabled_color = Color.gray;
 
 
     // START
@@ -32,6 +33,9 @@ public abstract class HoverButton : MonoBehaviour
         {
             rect_to_click = (RectTransform)transform;
         }
+
+        // we get the cursor
+        cursor = GameObject.Find("ui").GetComponent<CursorHandler>();
     }
 
 
@@ -42,7 +46,11 @@ public abstract class HoverButton : MonoBehaviour
         // ! we should not use it directly
 
         // we check if we are interactable
-        if (!interactable) { return; }
+        if (!interactable)
+        {
+            graphic.color = disabled_color;
+            return;
+        }
 
         // we check if we are hovered
         UpdateHover();
@@ -51,6 +59,12 @@ public abstract class HoverButton : MonoBehaviour
     }
     protected virtual void UpdateColors()
     {
+        if (!interactable)
+        {
+            graphic.color = disabled_color;
+            return;
+        }
+
         // we change the color
         if (hovered)
         {
@@ -61,22 +75,17 @@ public abstract class HoverButton : MonoBehaviour
             graphic.color = base_color;
         }
     }
-    protected virtual void UpdateCursor()
-    {
-        // we change the cursor
-        Cursor.SetCursor(hovered ? handCursorTexture : null, Vector2.zero, CursorMode.Auto);
-    }
 
     // HOVER
     public void Hover()
     {
         hovered = true;
-        UpdateCursor();
+        cursor.AddCursorDemand(gameObject, "hand", 1);
     }
     public void UnHover()
     {
         hovered = false;
-        UpdateCursor();
+        cursor.RemoveCursorDemand(gameObject);
     }
     public void UpdateHover()
     {

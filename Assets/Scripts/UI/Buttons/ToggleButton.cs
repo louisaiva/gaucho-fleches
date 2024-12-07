@@ -1,67 +1,68 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ToggleButton : MonoBehaviour
+public class ToggleButton : HoverButton
 {
 
     [Header("Toggle Button")]
     public bool toggled = false;
-    public bool interactable = true;
-    public bool hovered = false;
+    private bool clicked = false;
 
     // get on -> return true if toggled
     public bool On { get { return toggled; } }
     public bool Off { get { return !toggled; } }
 
-    [Header("Components")]
-    public Graphic graphic;
-
     [Header("Colors")]
-    public Color on_color = Color.green;
-    public Color on_hover_color = Color.green;
-    public Color off_color = Color.red;
-    public Color off_hover_color = Color.red;
+    public Color toggled_color = Color.green;
+    public Color toggled_hover_color = Color.green;
 
-    // START
-    void Start()
-    {
-        // we get the graphic
-        graphic = GetComponent<Graphic>();
-    }
+    [Header("Event")]
+    public UnityEngine.Events.UnityEvent OnToggle;
 
     // UPDATE
-    void Update()
+    protected override void Update()
     {
         // we check if we are interactable
         if (!interactable) { return; }
 
         // we check if we are hovered
-        hovered = RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, Input.mousePosition);
+        UpdateHover();
 
         // we check if we clicked
         if (Input.GetMouseButtonDown(0) && hovered)
         {
-            Toggle();
+            clicked = true;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            if (clicked) { Toggle(); }
+            clicked = false;
         }
 
-        // we change the color
-        if (toggled)
+        UpdateColors();
+    }
+
+    protected override void UpdateColors()
+    {
+        base.UpdateColors();
+        if (!interactable) { return; }
+
+        if (toggled && hovered)
         {
-            graphic.color = hovered ? on_hover_color : on_color;
+            graphic.color = toggled_hover_color;
         }
-        else
+        else if (toggled)
         {
-            graphic.color = hovered ? off_hover_color : off_color;
+            graphic.color = toggled_color;
         }
     }
 
     // TOGGLE
     public void Toggle()
     {
-        if (interactable)
-        {
-            toggled = !toggled;
-        }
+        toggled = !toggled;
+        OnToggle.Invoke();
+        UpdateColors();
     }
 
 }

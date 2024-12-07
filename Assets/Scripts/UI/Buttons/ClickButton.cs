@@ -15,7 +15,11 @@ public class ClickButton : HoverButton
     protected override void Update()
     {
         // we check if we are interactable
-        if (!interactable) { return; }
+        if (!interactable)
+        {
+            graphic.color = disabled_color;
+            return;
+        }
 
         // we check if we are hovered
         UpdateHover();
@@ -38,6 +42,8 @@ public class ClickButton : HoverButton
     {
         base.UpdateColors();
         
+        if (!interactable) { return; }
+
         if (clicked)
         {
             graphic.color = clicked_color;
@@ -51,8 +57,7 @@ public class ClickButton : HoverButton
 
         // we reset the clicked state
         clicked = false;
-        hovered = false;
-        UpdateCursor();
+        UnHover();
         UpdateColors();
     }
 

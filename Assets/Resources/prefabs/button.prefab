@@ -184,9 +184,10 @@ MonoBehaviour:
   hovered: 0
   graphic: {fileID: 0}
   rect_to_click: {fileID: 0}
-  handCursorTexture: {fileID: 2800000, guid: 574ad0837ed271947b98a2b73e40741c, type: 3}
+  cursor: {fileID: 0}
   base_color: {r: 0.41718584, g: 0.7048141, b: 0.7075472, a: 1}
   hover_color: {r: 0.5424528, g: 0.95040935, b: 1, a: 1}
+  disabled_color: {r: 0.5, g: 0.5, b: 0.5, a: 0}
   clicked: 0
   clicked_color: {r: 0.6232645, g: 0.8867924, b: 0.8867924, a: 1}
   OnClick:

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class OverlapButtonsHandler : MonoBehaviour
 {
     // simple script to defocus a button when another one is hovered
-    public Button otherButton;
+    public HoverButton otherButton;
     public Graphic graphic;
 
     bool disabled_the_other_button = false;
@@ -19,7 +19,7 @@ public class OverlapButtonsHandler : MonoBehaviour
         // we check if the mouse if over the graphic
         if (mouse_over && !disabled_the_other_button)
         {
-            // Debug.Log("Mouse over the graphic");
+            Debug.Log("Mouse over the graphic");
 
             // we disable the other button
             otherButton.interactable = false;
@@ -27,7 +27,7 @@ public class OverlapButtonsHandler : MonoBehaviour
         }
         else if (!mouse_over && disabled_the_other_button)
         {
-            // Debug.Log("Mouse not over the graphic");
+            Debug.Log("Mouse not over the graphic");
 
             // we enable the other button
             otherButton.interactable = true;
