@@ -8,8 +8,8 @@ Ce projet est en cours de développement. Il est actuellement utilisable, mais l
 
 ## Installation
 
--[Build v1.0.0](https://github.com/louisaiva/gaucho-fleches/releases/tag/v1.0.0) disponible - pas encore d'export de grilles
--ou alors clonage de ce repo et ouverture du projet avec Unity 6 (6000.0.28f1)
+- [Build v1.0.0](https://github.com/louisaiva/gaucho-fleches/releases/tag/v1.0.0) disponible - pas encore d'export de grilles
+- ou alors clonage de ce repo et ouverture du projet avec Unity 6 (6000.0.28f1)
 
 ## Utilisation
 
@@ -47,3 +47,5 @@ Lancez le logiciel. Vous pouvez ouvrir une grille existante ou en créer une nou
 - [ ] Export de la grille
 - [ ] Gestion de dictionnaires
 - [ ] Génération automatique de grilles basées sur des listes de mots.
+
+(voir le fichier [TODO.md](./todo.md) pour plus de détails)
