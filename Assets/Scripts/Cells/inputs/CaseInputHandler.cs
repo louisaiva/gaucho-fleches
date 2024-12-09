@@ -7,7 +7,8 @@ public class CaseInputHandler : MonoBehaviour
 {
     // public Case case_target;
     public bool is_writing = false;
-    public float lastNavigationTime = 0f;
+    public bool will_write_next_frame = false;
+    // public float lastNavigationTime = 0f;
     
     [Header("Components & References")]
     public TextMeshProUGUI input_text;
@@ -25,16 +26,38 @@ public class CaseInputHandler : MonoBehaviour
     // UPDATE
     void Update()
     {
-        if (!is_writing) { return; }
+        if (!is_writing)
+        {
+            if (will_write_next_frame)
+            {
+
+                Write();
+                will_write_next_frame = false;
+            }
+            return;
+        }
 
         // we check if we press escape
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             transform.parent.GetComponent<Cell>().UnSelect();
         }
-        else if (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Delete))
+        else if (Input.GetKeyDown(KeyCode.Delete))
         {
             input_text.text = "";
+        }
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            input_text.text = "";
+
+            // we check if we are in the navigator's word, then we go backspace
+            Case mother = transform.parent.GetComponent<Case>();
+            CaseNavigator navigator = mother.navigator;
+            if (navigator != null && navigator.IsInWord(mother))
+            {
+                // we navigate to the previous cell
+                navigator.NavigateInWord(mother, -1);
+            }
         }
 
         // we check if a key is pressed
@@ -44,6 +67,15 @@ public class CaseInputHandler : MonoBehaviour
             {
                 // we switch the letter
                 input_text.text = letter.ToString();
+
+                // we check if we are in the navigator's word, then we light up
+                Case mother = transform.parent.GetComponent<Case>();
+                CaseNavigator navigator = mother.navigator;
+                if (navigator != null && navigator.IsInWord(mother))
+                {
+                    // we navigate to the next cell
+                    navigator.NavigateInWord(mother);
+                }
             }
         }
     }
@@ -74,7 +106,7 @@ public class CaseInputHandler : MonoBehaviour
         is_writing = true;
 
         // we set the navigation time
-        lastNavigationTime = Time.time;
+        // lastNavigationTime = Time.time;
     }
 
     public void StopWriting()

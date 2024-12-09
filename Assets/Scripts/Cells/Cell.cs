@@ -10,6 +10,7 @@ public class Cell : MonoBehaviour
     public bool hovered = false;
     public bool selected = false;
     public bool standby = false;
+    public bool lighted = false;
     public GridHandler grid;
 
     [Header("Lines")]
@@ -17,13 +18,13 @@ public class Cell : MonoBehaviour
 
     [Header("Graphics & Colors")]
     public Image image;
-    // public 
     public Color color_normal;
     public Color color_hover;
     public Color color_selected;
+    public Color color_lighted;
 
     [Header("Navigation")]
-    protected CaseNavigator navigator;
+    public CaseNavigator navigator;
 
     // START
     protected virtual void Start()
@@ -68,6 +69,7 @@ public class Cell : MonoBehaviour
         // we change the color with the state
         if (selected) { image.color = color_selected; }
         else if (hovered) { image.color = color_hover; }
+        else if (lighted) { image.color = color_lighted; }
         else { image.color = color_normal; }
 
         // we navigate if the case is selected
@@ -103,6 +105,22 @@ public class Cell : MonoBehaviour
         // we set the standby mode
         standby = value;
     }
+
+
+    // LIGHT
+    public virtual void Light()
+    {
+        // we light the cell
+        lighted = true;
+        image.color = color_lighted;
+    }
+    public virtual void UnLight()
+    {
+        // we unlight the cell
+        lighted = false;
+        image.color = color_normal;
+    }
+
 
     // LINE MANAGEMENT
     public virtual void ActivateLeftUpLinesIfOnSide()

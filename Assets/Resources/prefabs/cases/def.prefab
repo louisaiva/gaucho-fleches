@@ -152,6 +152,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   is_writing: 0
   max_lines: 5
+  backspace_fast_mode: 0
+  backspace_timer: 0
+  backspace_fast_cooldown: 0.5
+  backspace_writing_speed: 0.075
   def: {fileID: 483195788171145584}
   text: {fileID: 7840988452993710242}
 --- !u!1 &906201230352399239
@@ -276,12 +280,14 @@ MonoBehaviour:
   hovered: 0
   selected: 0
   standby: 0
+  lighted: 0
   grid: {fileID: 0}
   lines: {fileID: 0}
   image: {fileID: 0}
   color_normal: {r: 0, g: 0, b: 0, a: 0}
   color_hover: {r: 0, g: 0, b: 0, a: 0}
   color_selected: {r: 0, g: 0, b: 0, a: 0}
+  color_lighted: {r: 0, g: 0, b: 0, a: 0}
   def1: {fileID: 8669018739565678745}
   line: {fileID: 2294006087715433745}
   def2: {fileID: 483195788171145584}
@@ -412,15 +418,17 @@ MonoBehaviour:
   hovered: 0
   selected: 0
   standby: 0
+  lighted: 0
   grid: {fileID: 0}
   lines: {fileID: 0}
   image: {fileID: 0}
   color_normal: {r: 0.41718584, g: 0.7048141, b: 0.7075472, a: 1}
   color_hover: {r: 0.6232645, g: 0.8867924, b: 0.8867924, a: 1}
   color_selected: {r: 0.5424528, g: 0.95040935, b: 1, a: 1}
+  color_lighted: {r: 0, g: 0, b: 0, a: 0}
   is_on_top: 1
   horizontal: 1
-  length: 1
+  length: 0
   text: {fileID: 5520611949604521837}
   input: {fileID: 7974498567223592186}
 --- !u!1 &3124620761835057627
@@ -754,15 +762,17 @@ MonoBehaviour:
   hovered: 0
   selected: 0
   standby: 0
+  lighted: 0
   grid: {fileID: 0}
   lines: {fileID: 0}
   image: {fileID: 0}
   color_normal: {r: 0.41718584, g: 0.7048141, b: 0.7075472, a: 1}
   color_hover: {r: 0.6232645, g: 0.8867924, b: 0.8867924, a: 1}
   color_selected: {r: 0.5424528, g: 0.95040935, b: 1, a: 1}
+  color_lighted: {r: 0, g: 0, b: 0, a: 0}
   is_on_top: 0
   horizontal: 0
-  length: 1
+  length: 0
   text: {fileID: 7840988452993710242}
   input: {fileID: 1989280331418669102}
 --- !u!1 &8033149587253475426
@@ -917,6 +927,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   is_writing: 0
   max_lines: 5
+  backspace_fast_mode: 0
+  backspace_timer: 0
+  backspace_fast_cooldown: 0.5
+  backspace_writing_speed: 0.075
   def: {fileID: 8669018739565678745}
   text: {fileID: 5520611949604521837}
 --- !u!1 &8266529376265572040

@@ -205,6 +205,9 @@ public class GridHandler : MonoBehaviour
             // we get the index of the existing cell
             index = existing_cell.transform.GetSiblingIndex();
 
+            // we unselect the cell
+            existing_cell.UnSelect();
+
             // we destroy the existing cell
             Destroy(existing_cell.gameObject);
         }

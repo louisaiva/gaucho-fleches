@@ -126,4 +126,10 @@ public class HelpHandler : MonoBehaviour
         text.enabled = false;
         bg.enabled = false;
     }
+
+    // ON ENABLE
+    private void OnEnable()
+    {
+        Update();
+    }
 }

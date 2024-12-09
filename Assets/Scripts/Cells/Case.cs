@@ -21,6 +21,19 @@ public class Case : Cell
         letter = transform.Find("letter").GetComponent<TextMeshProUGUI>();
     }
 
+    // UPDATE
+    protected override void Update()
+    {
+        base.Update();
+
+        // we check if we are in the navigator's word, then we light up
+        if (!hovered && !selected && navigator != null && navigator.IsInWord(this))
+        {
+            image.color = color_lighted;
+        }
+    }
+
+
     // SELECT & UNSELECT
     public override void Select()
     {
@@ -28,6 +41,13 @@ public class Case : Cell
         
         // we start writing
         input_handler.Write();
+    }
+    public void SelectNextFrame()
+    {
+        base.Select();
+
+        // we start writing next frame
+        input_handler.will_write_next_frame = true;
     }
 
     public override void UnSelect()
@@ -50,5 +70,9 @@ public class Case : Cell
     public override void SetContent(string content)
     {
         input_handler.SetLetter(content);
+    }
+    public char GetChar()
+    {
+        return letter.text[0];
     }
 }

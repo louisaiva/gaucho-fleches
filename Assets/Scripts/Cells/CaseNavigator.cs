@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CaseNavigator : MonoBehaviour
@@ -20,6 +21,10 @@ public class CaseNavigator : MonoBehaviour
         { KeyCode.DownArrow, new Vector2Int(0, 1) }
     };
 
+    [Header("Current definition's word")]
+    public List<Cell> currentWord = new List<Cell>();
+    public int currentWordIndex = -1;
+
     [Header("Components & References")]
     public GridHandler grid;
 
@@ -35,6 +40,12 @@ public class CaseNavigator : MonoBehaviour
     {
         // we set the selected case
         selectedCase = selected_case;
+
+        // we check if the selected case is inside the word
+        if (currentWord.Count > 0 && !currentWord.Contains(selectedCase))
+        {
+            ResetWord();
+        }
 
         // we check if we press tab (we switch case / def)
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -56,6 +67,9 @@ public class CaseNavigator : MonoBehaviour
 
             // we update the new case so MotherCell update its children & arrows
             // selectedCase.ForceUpdate();
+
+            // we reset the current word
+            ResetWord();
 
             // we select the new case
             selectedCase.Select();
@@ -131,6 +145,37 @@ public class CaseNavigator : MonoBehaviour
         // we check if the case is a MotherCell (we jump on a def)
         next_case = HandleJumpOnDef(next_case, direction);
 
+        // we check if the still current cell is a definition and the next one is a case
+        if (selectedCase is Definition && next_case is Case)
+        {
+            // we get the definition
+            Definition def = selectedCase as Definition;
+
+            // we check if the next_case is the start_cell of the definition
+            if (def.GetFirstLetter() == next_case)
+            {
+                // we update the current word
+                currentWord = def.GetWord();
+                currentWordIndex = 0;
+            }
+        }
+
+        // we check if we are in a word
+        if (currentWord.Count > 0)
+        {
+            // we check if the next case is in the current word
+            if (!currentWord.Contains(next_case))
+            {
+                // we reset the current word
+                ResetWord();
+            }
+            else
+            {
+                // we get the new index
+                currentWordIndex = currentWord.IndexOf(next_case);
+            }
+        }
+
         // we set the navigation time
         lastNavigationTime = Time.time;
 
@@ -145,6 +190,49 @@ public class CaseNavigator : MonoBehaviour
         fastNavigation = false;
     }
 
+    // In Word navigation
+    public void NavigateInWord(Case cell, int index_delta=1)
+    {
+        // we check if we can navigate or we need to wait cooldown
+        if (Time.time - lastNavigationTime < navigationCooldown) { return; }
+
+        // we check if we have a current word
+        if (currentWord.Count == 0) { return; }
+        // and that the case is in the current word
+        if (!currentWord.Contains(cell)) { return; }
+
+        // we get the new index
+        int new_index = currentWordIndex + index_delta;
+        if (new_index < 0 || new_index >= currentWord.Count) { return; }
+
+        // we get the new case
+        Case new_case = currentWord[new_index] as Case;
+        if (new_case == null) { return; }
+
+        // we set the navigation time
+        lastNavigationTime = Time.time;
+        currentWordIndex = new_index;
+
+        // we stop writing and start writing on the new case
+        selectedCase.UnSelect();
+        new_case.SelectNextFrame();
+        // new_case.input_handler.will_write_next_frame = true;
+    }
+    public bool IsInWord(Case cell)
+    {
+        // we check if we have a current word
+        if (currentWord.Count == 0) { return false; }
+        // and that the case is in the current word
+        if (!currentWord.Contains(cell)) { return false; }
+
+        return true;
+    }
+
+    public void ResetWord()
+    {
+        currentWord.Clear();
+        currentWordIndex = -1;
+    }
 
     // Definition navigation - a particular case
     bool HandleDefinitionNavigation(Cell selected_case, Vector2Int direction)

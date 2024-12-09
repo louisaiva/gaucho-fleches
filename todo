@@ -1,26 +1,69 @@
+--
+patchs en cours après la version 1.0.1
+--
 
--- PATCHS TO DO
 
-[x] bouton suppr pour supprimer le contenu d'une case
-[ ] bouton handler qui change le cursor en main quand on hover un bouton
-[ ] modifier couleur du bg de l'input de la taille de la grille à créer
 
--- FEATURES TO ADD
+-- patch 1.0.2
 
-[ ] copier/coller sur les definitions !
-[ ] nouveau type de cellule qui peut intégrer une partie d'une image / du texte
-[ ] quand on sélectionne une definition ça met en surbrillance les lines / colores les cases du mot
-[ ] changement de la typo des lettres ! (à sauvegarder dans le fichier .json)
-    [ ] changement des couleurs d'export (case/def)
+    [x] copier/coller sur les definitions !
+    [x] supprimer les espace en début de DefInputHandler
+    [x] quand on sélectionne une definition ça met en surbrillance les lines / colores les cases du mot
+    [x] smart navigation quand on écrit une lettre dans un mot ça passe à la case suivante
 
-[ ] export :
-    [x] dupliquer la grille dans l'exporter,
-    [x] figer (standby) toutes les cellules au moment de l'export
-    [x] calculer le zoom pour avoir N*N pixels par case
-    [x] puis pour chaque case ? on fait un screen et on déplace jusqu'à la prochaine case
-    [x] régler le calcul de la taille de chaque screenshot : https://docs.unity3d.com/ScriptReference/Texture2D.ReadPixels.html
-    [x] ensuite on concatène les screens correctement
-    [x] on enregistre ça au fichier png ?
-    [x] faire pareil en désactivant les réponses
-    [ ] puis convertit en pdf ?
-    
+
+-- patch 1.0.3
+    [ ] changement de la typo des lettres ! (à sauvegarder dans le fichier .json)
+        [ ] changement des couleurs d'export (case/def)
+
+
+
+
+-- patch 1.1.0
+
+    [ ] refactor du GridHandler -> division en 2 classes
+        [ ] Grid : la grille en elle-même. sa seule responsabilité est le stockage optimal de grid[,] et d'avoir des bons getters/setters
+                -> c'est que du stockage de données
+                -> facilite la sauvegarde, stocke toutes les données qu'on a besoin
+                -> sauvegarde aussi les edits de la grille ?
+                -> tout le monde à l'accès à la grille, et chaque cellule peut facilement regarder ses voisins
+        [ ] GridHandler : la gestion de la grille. Grosse Update method qui check les modifs
+                -> c la RAM en gros, stocke les données nécessaires à la session
+                -> gère les inputs, les freezes, etc
+                -> appelle toutes les cellules une par une pour les updates
+                -> comme ça on appelle pas celles qu'on veut pas
+
+    [ ] refactor des cellules -> ajout d'une classe, modifications dans Cell.cs / Case.cs / Def.cs / MotherCell.cs
+        [ ] ajout de EmptyCell.cs, ImageCell.cs, TextCell.cs ?
+                -> cellule noire vide qui peut accueillir du texte / image
+
+
+
+
+
+
+
+
+
+
+--
+patchs terminés
+--
+
+
+    [x] bouton suppr pour supprimer le contenu d'une case
+    [x] bouton handler qui change le cursor en main quand on hover un bouton
+    [x] modifier couleur du bg de l'input de la taille de la grille à créer
+
+    [x] export :
+        [x] dupliquer la grille dans l'exporter,
+        [x] figer (standby) toutes les cellules au moment de l'export
+        [x] calculer le zoom pour avoir N*N pixels par case
+        [x] puis pour chaque case ? on fait un screen et on déplace jusqu'à la prochaine case
+        [x] régler le calcul de la taille de chaque screenshot : https://docs.unity3d.com/ScriptReference/Texture2D.ReadPixels.html
+        [x] ensuite on concatène les screens correctement
+        [x] on enregistre ça au fichier png ?
+        [x] faire pareil en désactivant les réponses
+        [x] puis convertit en pdf ?
+
+

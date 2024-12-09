@@ -25,8 +25,8 @@ public class CanvasScreenShot : MonoBehaviour
     [Header("Parametres globaux")]
     RectTransform gridRect;
     RenderTexture gridshot;
-    public int spacing_offset_x = 0;
-    public int spacing_offset_y = 0;
+    public float spacing_offset_x = 0;
+    public float spacing_offset_y = 0;
     public int export_width = 0;
     public int export_height = 0;
 
@@ -131,13 +131,13 @@ public class CanvasScreenShot : MonoBehaviour
         Debug.Log("Cell appears on screen with those dimensions : " + cellScreenSize);
 
         // we apply a scale to the grid to reach the desired size
-        int scale = (int)(px_per_cell / cellScreenSize.x);
+        float scale = px_per_cell / cellScreenSize.x;
         grid.transform.localScale = new Vector3(scale, scale, 1);
         Debug.Log("We applied the scale " + scale + " to the grid, so that the cell appears on screen with those dimensions : " + GetRectScreenSize(cellRect, canva));
 
         // we get the size of the spacing
         GridLayoutGroup gridLayoutGroup = grid.GetComponent<GridLayoutGroup>();
-        int spacing = ((int)gridLayoutGroup.spacing.x) * scale;
+        float spacing = gridLayoutGroup.spacing.x * scale;
 
         // we move the grid to put the first cell in the top left
         gridLayoutGroup.childAlignment = TextAnchor.UpperLeft;
@@ -149,8 +149,8 @@ public class CanvasScreenShot : MonoBehaviour
         spacing_offset_y = -spacing;
 
         // we calculate the size of the grid
-        export_width = grid.columns * (px_per_cell + spacing) + spacing;
-        export_height = grid.rows * (px_per_cell + spacing) + spacing;
+        export_width = Mathf.FloorToInt(grid.columns * (px_per_cell + spacing) + spacing);
+        export_height = Mathf.FloorToInt(grid.rows * (px_per_cell + spacing) + spacing);
     }
 
     private Vector2 GetRectScreenSize(RectTransform rectTransform, Canvas canvas = null)
