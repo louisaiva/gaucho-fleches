@@ -185,7 +185,7 @@ public class Definition : Cell
     public Cell GetFirstLetter()
     {
         // we get the grid
-        if (grid == null) { Start(); }
+        if (grid == null || mother == null) { Start(); }
 
         // we get the offset
         Vector2Int offset = new(0, 0);
@@ -197,6 +197,10 @@ public class Definition : Cell
         {
             offset = new(1, 0);
         }
+
+        // we log
+        string log = "Getting first letter of " + mother.name + " - ";
+        Debug.Log(log + "grid: " + grid);
 
         return grid.GetCell(mother.x + offset.x, mother.y + offset.y);
     }

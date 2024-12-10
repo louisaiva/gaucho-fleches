@@ -17,6 +17,23 @@ patchs en cours après la version 1.0.1
         [ ] changement des couleurs d'export (case/def)
 
 
+-- patch 1.0.4
+    [ ] ajout de dictionnaires
+        [ ] fenetre dictionnaires avec plusieurs onglets
+                -> onglet de priorité des dictionnaires (on peut les déplacer du haut vers le bas, et les activer/désactiver
+                -> onglet de gestion des dictionnaires (ajout, suppression, modification)
+                -> onglet de recherche de mots (soit dans tous les dictionnaires, soit dans un seul)
+                -> liste noire de mots (on peut aussi charger une grille pour ban tous les mots de la grille)
+        [ ] auto-remplissage de mot
+                -> en testant tous les mots du 1er dico, on met le 1er mot qui rentre
+                    (ex :
+                        on a un espace de 10 cases avant la prochaine case noire.
+                        on teste tous les mots à 10 lettres du dico 1, et on met le 1er qui rentre
+                        si y'en a pas on passe au dico 2 puis 3 (on a que 3 dicos)
+                        sinon on teste dico 1 avec 9 lettres, etc
+                    )
+        
+
 
 
 -- patch 1.1.0

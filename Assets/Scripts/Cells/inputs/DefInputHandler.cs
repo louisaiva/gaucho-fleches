@@ -184,12 +184,26 @@ public class DefInputHandler : MonoBehaviour
         string letter = input.ToString();
 
         // we check if we add a new line
-        if (input == '\n' || input == '\r') { letter = "\\n"; }
+        if (input == '\n' || input == '\r')
+        {
+            // we check if we are empty
+            if (text.text.Length == 0) { return false; }
+
+            // we check if the last character is already a new line
+            if (text.text.Length > 1 && text.text[^2] == '\\'
+                    && text.text[^1] == 'n') { return false; }
+
+            // we add a new line
+            text.text += "\\n";
+            text.ForceMeshUpdate();
+            return true;
+        }
 
         // we don't add it if it's a /t
         if (input == '\t') { return false; }
 
         // we check if we are empty and this is a space
+        
         if (text.text.Length == 0 && input == ' ')
         {
             Debug.Log("empty + space");

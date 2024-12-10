@@ -46,6 +46,10 @@ public class CaseNavigator : MonoBehaviour
         {
             ResetWord();
         }
+        else if (currentWord.Count > 0 && currentWord.Contains(selectedCase))
+        {
+            currentWordIndex = currentWord.IndexOf(selectedCase);
+        }
 
         // we check if we press tab (we switch case / def)
         if (Input.GetKeyDown(KeyCode.Tab))

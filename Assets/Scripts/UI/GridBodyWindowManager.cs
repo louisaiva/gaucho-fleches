@@ -32,7 +32,7 @@ public class GridBodyWindowManager : MonoBehaviour
         rect = GetComponent<RectTransform>();
 
         // we get the cursor
-        cursor = GameObject.Find("ui").GetComponent<CursorHandler>();
+        cursor = GameObject.Find("ui")?.GetComponent<CursorHandler>();
     }
 
     // ON RESIZE
