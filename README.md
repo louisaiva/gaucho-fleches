@@ -45,4 +45,4 @@ Lancez le logiciel. Vous pouvez ouvrir une grille existante ou en créer une nou
 - [ ] Gestion de dictionnaires
 - [ ] Génération automatique de grilles basées sur des listes de mots.
 
-(voir le fichier [TODO.md](./todo.md) pour plus de détails)
+(voir le fichier [todo](./todo) pour plus de détails)
