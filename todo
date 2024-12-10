@@ -1,15 +1,7 @@
 --
-patchs en cours après la version 1.0.1
+patchs en cours après la version 1.0.2
 --
 
-
-
--- patch 1.0.2
-
-    [x] copier/coller sur les definitions !
-    [x] supprimer les espace en début de DefInputHandler
-    [x] quand on sélectionne une definition ça met en surbrillance les lines / colores les cases du mot
-    [x] smart navigation quand on écrit une lettre dans un mot ça passe à la case suivante
 
 
 -- patch 1.0.3
@@ -68,19 +60,29 @@ patchs terminés
 --
 
 
-    [x] bouton suppr pour supprimer le contenu d'une case
-    [x] bouton handler qui change le cursor en main quand on hover un bouton
-    [x] modifier couleur du bg de l'input de la taille de la grille à créer
+    -- patch 1.0.2
 
-    [x] export :
-        [x] dupliquer la grille dans l'exporter,
-        [x] figer (standby) toutes les cellules au moment de l'export
-        [x] calculer le zoom pour avoir N*N pixels par case
-        [x] puis pour chaque case ? on fait un screen et on déplace jusqu'à la prochaine case
-        [x] régler le calcul de la taille de chaque screenshot : https://docs.unity3d.com/ScriptReference/Texture2D.ReadPixels.html
-        [x] ensuite on concatène les screens correctement
-        [x] on enregistre ça au fichier png ?
-        [x] faire pareil en désactivant les réponses
-        [x] puis convertit en pdf ?
+        [x] copier/coller sur les definitions !
+        [x] backspace rapide sur les definitions
+        [x] supprimer les espace en début de DefInputHandler
+        [x] quand on sélectionne une definition ça met en surbrillance les lines / colores les cases du mot
+        [x] smart navigation quand on écrit une lettre dans un mot ça passe à la case suivante
+
+    -- patch 1.0.1
+        
+        [x] bouton suppr pour supprimer le contenu d'une case
+        [x] bouton handler qui change le cursor en main quand on hover un bouton
+        [x] modifier couleur du bg de l'input de la taille de la grille à créer
+
+        [x] export :
+            [x] dupliquer la grille dans l'exporter,
+            [x] figer (standby) toutes les cellules au moment de l'export
+            [x] calculer le zoom pour avoir N*N pixels par case
+            [x] puis pour chaque case ? on fait un screen et on déplace jusqu'à la prochaine case
+            [x] régler le calcul de la taille de chaque screenshot : https://docs.unity3d.com/ScriptReference/Texture2D.ReadPixels.html
+            [x] ensuite on concatène les screens correctement
+            [x] on enregistre ça au fichier png ?
+            [x] faire pareil en désactivant les réponses
+            [x] puis convertit en pdf ?
 
 

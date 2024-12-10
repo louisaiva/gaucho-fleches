@@ -8,7 +8,7 @@ Ce projet est en cours de développement. Il est actuellement utilisable, mais l
 
 ## Installation
 
-- [Build v1.0.0](https://github.com/louisaiva/gaucho-fleches/releases/tag/v1.0.0) disponible - pas encore d'export de grilles
+- [Build v1.0.2](https://github.com/louisaiva/gaucho-fleches/releases/tag/v1.0.2) disponible -> téléchargement du fichier .zip, extraction et lancement de l'exécutable "gaucho-fleches.exe"
 - ou alors clonage de ce repo et ouverture du projet avec Unity 6 (6000.0.28f1)
 
 ## Utilisation
@@ -18,6 +18,7 @@ Lancez le logiciel. Vous pouvez ouvrir une grille existante ou en créer une nou
 ### Barre d'outils - Edition de grille
 - Bouton quitter
 - Bouton sauvegarde
+- Bouton export
 
 ### Raccourcis souris - Edition de grille
 - Clic gauche sur une case/definition : la sélectionner (ensuite clavier pour y entrer une lettre)
@@ -38,13 +39,9 @@ Lancez le logiciel. Vous pouvez ouvrir une grille existante ou en créer une nou
 
 ## Suivi de développement
 
-- [x] Menu d'ouverture / création de grilles.
-- [x] Sauvegarde et chargement des grilles.
-- [x] Navigation de grille manuelle au clavier & souris.
-- [x] Saisie de lettres dans les cases.
-- [x] Saisie des définitions dans les cases définitions
-- [x] Zoom de la grille
-- [ ] Export de la grille
+- [x] Création / Edition de grilles
+- [x] Sauvegarde / Chargement de grilles
+- [x] Export de la grille au format pdf
 - [ ] Gestion de dictionnaires
 - [ ] Génération automatique de grilles basées sur des listes de mots.
 
